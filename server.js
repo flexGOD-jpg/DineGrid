@@ -26,18 +26,13 @@ const client = new MongoClient(uri, {
   }
 });
 
-let db;
+const db = client.db("dinegrid");
 
-async function connectDB() {
-  try {
-    await client.connect();
-    db = client.db("dinegrid");
-    console.log("✅ MongoDB Atlas connected successfully!");
-  } catch (error) {
-    console.error("⚠️ Error connecting to MongoDB:", error);
-  }
-}
-connectDB();
+client.connect().then(() => {
+  console.log("✅ MongoDB Atlas connected successfully!");
+}).catch(error => {
+  console.error("⚠️ Error connecting to MongoDB:", error);
+});
 
 // -------------------- MIDDLEWARE --------------------
 const verifyAdmin = (req, res, next) => {
