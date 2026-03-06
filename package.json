@@ -4,8 +4,8 @@
   "description": "DineGrid restaurant discovery platform backend",
   "main": "server-db.js",
   "scripts": {
-    "start": "node server-db.js",
-    "dev": "node server-simple.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

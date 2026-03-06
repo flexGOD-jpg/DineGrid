@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -8,71 +8,46 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ADMIN CREDENTIALS - CHANGE THESE!
+// ADMIN CREDENTIALS
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'SUBHAMDAXXX'; // Change this to your own password
-const JWT_SECRET = 'your_secret_key_change_this'; // Change this!
+const ADMIN_PASSWORD = 'SUBHAMDAXXX';
+const JWT_SECRET = 'your_secret_key_change_this_later';
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('.')); // Serve static files
+app.use(express.static('.'));
 
-// MongoDB connection (using cloud MongoDB Atlas URI from .env)
-const MONGODB_URI = process.env.MONGODB_URI;
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => {
-    console.log('⚠️ MongoDB not running. Install MongoDB or use MongoDB Atlas');
-    console.log('For now, data will be stored in memory only');
-  });
-
-// -------------------- SCHEMAS --------------------
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
-  state: String,
-  type: String,
-  timestamp: { type: Date, default: Date.now }
+const uri = "mongodb+srv://admin:Password123@cluster0.m6phulv.mongodb.net/?appName=Cluster0";
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
-const businessSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
-  state: String,
-  timestamp: { type: Date, default: Date.now }
-});
+let db;
 
-const loginSchema = new mongoose.Schema({
-  email: String,
-  type: String,
-  timestamp: { type: Date, default: Date.now }
-});
+async function connectDB() {
+  try {
+    await client.connect();
+    db = client.db("dinegrid");
+    console.log("✅ MongoDB Atlas connected successfully!");
+  } catch (error) {
+    console.error("⚠️ Error connecting to MongoDB:", error);
+  }
+}
+connectDB();
 
-const User = mongoose.model('User', userSchema);
-const Business = mongoose.model('Business', businessSchema);
-const Login = mongoose.model('Login', loginSchema);
-
-// -------------------- MIDDLEWARE - Verify Admin --------------------
+// -------------------- MIDDLEWARE --------------------
 const verifyAdmin = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
+  if (!token) return res.status(401).json({ error: 'No token provided' });
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded.username === ADMIN_USERNAME) {
-      next();
-    } else {
-      res.status(403).json({ error: 'Not authorized' });
-    }
+    if (decoded.username === ADMIN_USERNAME) next();
+    else res.status(403).json({ error: 'Not authorized' });
   } catch (err) {
     res.status(401).json({ error: 'Invalid token' });
   }
@@ -81,7 +56,6 @@ const verifyAdmin = (req, res, next) => {
 // -------------------- ADMIN LOGIN --------------------
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
-
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     const token = jwt.sign({ username: ADMIN_USERNAME }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ success: true, token });
@@ -93,8 +67,8 @@ app.post('/api/admin/login', (req, res) => {
 // -------------------- USER ENDPOINTS --------------------
 app.post('/api/signup', async (req, res) => {
   try {
-    const user = new User(req.body);
-    await user.save();
+    const user = { ...req.body, timestamp: new Date() };
+    await db.collection('users').insertOne(user);
     res.status(201).json({ message: 'User created successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -103,8 +77,8 @@ app.post('/api/signup', async (req, res) => {
 
 app.post('/api/business', async (req, res) => {
   try {
-    const biz = new Business(req.body);
-    await biz.save();
+    const biz = { ...req.body, timestamp: new Date() };
+    await db.collection('businesses').insertOne(biz);
     res.status(201).json({ message: 'Business registered successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -113,75 +87,55 @@ app.post('/api/business', async (req, res) => {
 
 app.post('/api/login-activity', async (req, res) => {
   try {
-    const login = new Login(req.body);
-    await login.save();
+    const login = { ...req.body, timestamp: new Date() };
+    await db.collection('logins').insertOne(login);
     res.status(201).json({ message: 'Login recorded' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// -------------------- ADMIN PROTECTED ENDPOINTS --------------------
-// Get all users (ADMIN ONLY)
+// -------------------- ADMIN ENDPOINTS --------------------
 app.get('/api/admin/users', verifyAdmin, async (req, res) => {
   try {
-    const users = await User.find().sort({ timestamp: -1 }).limit(1000);
+    const users = await db.collection('users').find().sort({ timestamp: -1 }).limit(1000).toArray();
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get all businesses (ADMIN ONLY)
 app.get('/api/admin/businesses', verifyAdmin, async (req, res) => {
   try {
-    const businesses = await Business.find().sort({ timestamp: -1 }).limit(1000);
+    const businesses = await db.collection('businesses').find().sort({ timestamp: -1 }).limit(1000).toArray();
     res.json(businesses);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get all logins (ADMIN ONLY)
 app.get('/api/admin/logins', verifyAdmin, async (req, res) => {
   try {
-    const logins = await Login.find().sort({ timestamp: -1 }).limit(1000);
+    const logins = await db.collection('logins').find().sort({ timestamp: -1 }).limit(1000).toArray();
     res.json(logins);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get user count (ADMIN ONLY)
 app.get('/api/admin/stats', verifyAdmin, async (req, res) => {
   try {
-    const userCount = await User.countDocuments();
-    const businessCount = await Business.countDocuments();
-    const loginCount = await Login.countDocuments();
+    const totalUsers = await db.collection('users').countDocuments();
+    const totalBusinesses = await db.collection('businesses').countDocuments();
+    const totalLogins = await db.collection('logins').countDocuments();
 
-    res.json({
-      totalUsers: userCount,
-      totalBusinesses: businessCount,
-      totalLogins: loginCount
-    });
+    res.json({ totalUsers, totalBusinesses, totalLogins });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Delete user (ADMIN ONLY)
-app.delete('/api/admin/user/:id', verifyAdmin, async (req, res) => {
-  try {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ message: 'User deleted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Start server
 app.listen(PORT, () => {
   console.log(`\n🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Admin Panel: http://localhost:${PORT}/admin.html`);
-  console.log(`\n⚙️  IMPORTANT: Change ADMIN_PASSWORD in server.js!\n`);
+  console.log(`📊 Admin Panel: http://localhost:${PORT}/admin.html\n`);
 });
