@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DineGrid | Discover Culinary Experiences</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #E23744;
+            --primary-dark: #CB202D;
+            --primary-light: #FF5A6E;
+            --secondary: #FFB800;
+            --accent: #60B246;
+            --dark: #1C1C1C;
+            --darker: #111111;
+            --light: #FFFFFF;
+            --gray: #8A8A8A;
+            --light-gray: #F5F5F5;
+            --gradient: linear-gradient(135deg, #E23744, #FF5A6E);
+            --gradient-gold: linear-gradient(135deg, #FFB800, #FFD700);
+            --gradient-green: linear-gradient(135deg, #60B246, #8BC34A);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Animated Background Elements */
+        .floating-food {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.7;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .food-1 { top: 10%; left: 5%; width: 60px; animation-delay: 0s; }
+        .food-2 { top: 20%; right: 8%; width: 80px; animation-delay: 1s; }
+        .food-3 { bottom: 15%; left: 10%; width: 70px; animation-delay: 2s; }
+        .food-4 { bottom: 25%; right: 15%; width: 65px; animation-delay: 3s; }
+        .food-5 { top: 40%; left: 15%; width: 55px; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        .logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 20px rgba(226, 55, 68, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(226, 55, 68, 0.4);
+            animation: pulse 1s;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(226, 55, 68, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-gold {
+            background: var(--gradient-gold);
+            color: var(--dark);
+            box-shadow: 0 5px 20px rgba(255, 184, 0, 0.3);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 184, 0, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FFF5F6 0%, #FFF 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(226, 55, 68, 0.03) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.8rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            color: var(--dark);
+        }
+
+        .hero-text h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-text h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(226, 55, 68, 0.1);
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+
+        .hero-search {
+            display: flex;
+            max-width: 500px;
+            background: white;
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .hero-search:focus-within {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .hero-search input {
+            flex: 1;
+            border: none;
+            padding: 18px 25px;
+            font-size: 1rem;
+            border-radius: 50px;
+            outline: none;
+        }
+
+        .hero-search button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-search button:hover {
+            transform: scale(1.05);
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-heavy);
+            transform: perspective(1000px) rotateY(-10deg);
+            transition: var(--transition);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hero-img:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .stat-content h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features {
+            padding: 100px 0;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            font-size: 1.8rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            background: var(--gradient);
+            color: white;
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        /* Restaurants Preview */
+        .restaurants-preview {
+            padding: 100px 0;
+        }
+
+        .restaurant-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .restaurant-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .restaurant-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .restaurant-card:hover .restaurant-image img {
+            transform: scale(1.1);
+        }
+
+        .restaurant-rating {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gradient-gold);
+            color: var(--dark);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .restaurant-content {
+            padding: 25px;
+        }
+
+        .restaurant-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .restaurant-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* For Businesses */
+        .business-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #1C1C1C 0%, #2D2D2D 100%);
+            color: white;
+        }
+
+        .business-section .section-title h2 {
+            color: white;
+        }
+
+        .business-section .section-title p {
+            color: #B0B0B0;
+        }
+
+        .business-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .business-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 40px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .business-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .business-card .feature-icon {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .business-card h3 {
+            color: white;
+        }
+
+        .business-card p {
+            color: #B0B0B0;
+        }
+
+        /* Cities Section */
+        .cities-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .cities-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: none;
+        }
+
+        .cities-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .city-card {
+            min-width: 200px;
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .city-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .city-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .city-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .city-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            text-align: center;
+            background: linear-gradient(rgba(28, 28, 28, 0.9), rgba(28, 28, 28, 0.9)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            position: relative;
+        }
+
+        .cta-section h2 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-size: 1.2rem;
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 450px;
+            overflow: hidden;
+            box-shadow: var(--shadow-heavy);
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(100px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            color: var(--gray);
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            background: white;
+        }
+
+        .auth-tab-indicator {
+            position: absolute;
+            bottom: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: left 0.3s ease;
+            width: 50%;
+        }
+
+        .auth-form {
+            padding: 40px;
+        }
+
+        .close-auth {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-auth:hover {
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .auth-form h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid #E0E0E0;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(226, 55, 68, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .social-login {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .social-login p {
+            color: var(--gray);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .social-login p::before, .social-login p::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #E0E0E0;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #E0E0E0;
+            background: white;
+            color: var(--dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker);
+            color: white;
+            padding: 80px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #B0B0B0;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--gradient);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #B0B0B0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .hero-search {
+                flex-direction: column;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .hero-search input, .hero-search button {
+                width: 100%;
+                margin-bottom: 10px;
+                border-radius: var(--radius);
+            }
+            
+            .hero-search input {
+                background: white;
+                box-shadow: var(--shadow);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Food Elements -->
+    <div class="floating-food food-1">
+        <i class="fas fa-pizza-slice" style="color: var(--primary); font-size: 3rem;"></i>
+    </div>
+    <div class="floating-food food-2">
+        <i class="fas fa-coffee" style="color: var(--secondary); font-size: 4rem;"></i>
+    </div>
+    <div class="floating-food food-3">
+        <i class="fas fa-ice-cream" style="color: #FF5A6E; font-size: 3.5rem;"></i>
+    </div>
+    <div class="floating-food food-4">
+        <i class="fas fa-cookie-bite" style="color: var(--accent); font-size: 3.2rem;"></i>
+    </div>
+    <div class="floating-food food-5">
+        <i class="fas fa-wine-glass-alt" style="color: var(--primary); font-size: 2.8rem;"></i>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>DineGrid</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Explore</a></li>
+                <li><a href="#restaurants">Restaurants</a></li>
+                <li><a href="#business">For Businesses</a></li>
+                <li><a href="#cities">Cities</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="loginBtn">Log In</button>
+                <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text animate__animated animate__fadeInLeft">
+                <h1>Discover <span>Extraordinary</span> Dining Experiences</h1>
+                <p>From cozy cafes to fine dining, find your perfect spot with real-time availability, exclusive offers, and seamless reservations. Join thousands of food enthusiasts.</p>
+                
+                <div class="hero-search">
+                    <input type="text" placeholder="Search for restaurants, cuisines, or dishes...">
+                    <button id="searchBtn">
+                        <i class="fas fa-search"></i> Find Food
+                    </button>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="restaurantCount">15,000+</h3>
+                            <p>Restaurants</p>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="cityCount">50+</h3>
+                            <p>Cities</p>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="userCount">1M+</h3>
+                            <p>Food Lovers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image animate__animated animate__fadeInRight">
+                <img src="https://images.unsplash.com/photo-1578474846511-04ba529f0b88?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Food Experience" class="hero-img">
+                <div class="restaurant-rating" style="position: absolute; bottom: 20px; left: 20px;">
+                    <i class="fas fa-star"></i> 4.8 • 2.5k reviews
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Food Lovers Choose DineGrid</h2>
+                <p>Experience dining like never before with our innovative features</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                    <h3>Smart Discovery</h3>
+                    <p>Find restaurants based on mood, cuisine, and real-time crowd levels. Personalized recommendations just for you.</p>
+                    <a href="#" style="color: var(--primary); font-weight: 600; text-decoration: none;">Explore →</a>
+                </div>
+                
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Instant Reservations</h3>
+                    <p>Book tables in seconds with live availability. Modify or cancel anytime with zero hassle.</p>
+                    <a href="#" style="color: var(--primary); font-weight: 600; text-decoration: none;">Book Now →</a>
+                </div>
+                
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-concierge-bell"></i>
+                    </div>
+                    <h3>Order Ahead</h3>
+                    <p>Skip the wait. Order before you arrive and have food ready on your table when you get there.</p>
+                    <a href="#" style="color: var(--primary); font-weight: 600; text-decoration: none;">Order Now →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Restaurants Preview -->
+    <section class="restaurants-preview" id="restaurants">
+        <div class="container">
+            <div class="section-title">
+                <h2>Curated Dining Experiences</h2>
+                <p>Discover handpicked restaurants loved by our community</p>
+            </div>
+            
+            <div class="restaurant-cards">
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Fine Dining">
+                        <div class="restaurant-rating">
+                            <i class="fas fa-star"></i> 4.9
+                        </div>
+                    </div>
+                    <div class="restaurant-content">
+                        <h3>The Gourmet Table</h3>
+                        <div class="restaurant-tags">
+                            <span class="tag">Fine Dining</span>
+                            <span class="tag">Italian</span>
+                            <span class="tag">Romantic</span>
+                        </div>
+                        <p>Experience exquisite Italian cuisine in an elegant setting.</p>
+                    </div>
+                </div>
+                
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Cafe">
+                        <div class="restaurant-rating">
+                            <i class="fas fa-star"></i> 4.7
+                        </div>
+                    </div>
+                    <div class="restaurant-content">
+                        <h3>Artisan Coffee Hub</h3>
+                        <div class="restaurant-tags">
+                            <span class="tag">Cafe</span>
+                            <span class="tag">Coffee</span>
+                            <span class="tag">Cozy</span>
+                        </div>
+                        <p>Specialty coffee and fresh pastries in a cozy atmosphere.</p>
+                    </div>
+                </div>
+                
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Street Food">
+                        <div class="restaurant-rating">
+                            <i class="fas fa-star"></i> 4.8
+                        </div>
+                    </div>
+                    <div class="restaurant-content">
+                        <h3>Urban Street Kitchen</h3>
+                        <div class="restaurant-tags">
+                            <span class="tag">Street Food</span>
+                            <span class="tag">Fusion</span>
+                            <span class="tag">Casual</span>
+                        </div>
+                        <p>Creative street food fusion in a vibrant urban setting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Businesses -->
+    <section class="business-section" id="business">
+        <div class="container">
+            <div class="section-title">
+                <h2>Power Your Restaurant Business</h2>
+                <p>Comprehensive tools for cafes, restaurants, and resorts</p>
+            </div>
+            
+            <div class="business-features">
+                <div class="business-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3>Smart Inventory</h3>
+                    <p>Track supplies, predict demand, and optimize purchases with AI-powered inventory management.</p>
+                </div>
+                
+                <div class="business-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Get detailed insights into customer preferences, peak hours, and popular menu items.</p>
+                </div>
+                
+                <div class="business-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h3>Reservation System</h3>
+                    <p>Manage bookings, waitlists, and table allocations efficiently from one dashboard.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 50px;">
+                <button class="btn btn-gold" id="businessBtn">
+                    <i class="fas fa-store"></i> Register Your Business
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cities Section -->
+    <section class="cities-section" id="cities">
+        <div class="container">
+            <div class="section-title">
+                <h2>Discover Food Across Cities</h2>
+                <p>We're bringing exceptional dining experiences to cities worldwide</p>
+            </div>
+            
+            <div class="cities-slider" id="citiesSlider">
+                <!-- Cities will be dynamically added -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="animate__animated animate__pulse animate__infinite" style="animation-duration: 2s;">Ready to Transform Your Dining Experience?</h2>
+            <p>Join millions of food lovers who trust DineGrid for discovering amazing dining spots.</p>
+            <p style="margin-bottom: 50px;">Sign up now for exclusive early access offers.</p>
+            
+            <button class="btn btn-primary" id="ctaSignupBtn" style="padding: 18px 45px; font-size: 1.2rem;">
+                <i class="fas fa-rocket"></i> Join DineGrid Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-content">
+            <button class="close-auth" id="closeAuth">&times;</button>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Log In</div>
+                <div class="auth-tab" id="signupTab">Sign Up</div>
+                <div class="auth-tab-indicator" id="tabIndicator"></div>
+            </div>
+            
+            <div class="auth-form" id="loginForm">
+                <h3>Welcome Back!</h3>
+                <form id="loginFormElement">
+                    <div class="form-group">
+                        <label for="loginEmail">Email or Phone Number</label>
+                        <input type="text" class="form-control" id="loginEmail" placeholder="Enter email or phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Enter password" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="checkbox">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px;">
+                        Log In
+                    </button>
+                </form>
+                
+                <div class="social-login">
+                    <p>or continue with</p>
+                    <div class="social-buttons">
+                        <div class="social-btn" id="googleBtn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn" id="facebookBtn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn" id="appleBtn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-form" id="signupForm" style="display: none;">
+                <h3>Join DineGrid Today</h3>
+                <form id="signupFormElement">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" class="form-control" id="signupName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" class="form-control" id="signupEmail" placeholder="Enter email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupPhone">Phone Number</label>
+                        <input type="tel" class="form-control" id="signupPhone" placeholder="Enter phone number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupCity">Your City</label>
+                        <select class="form-control" id="signupCity" required>
+                            <option value="">Select your city</option>
+                            <option value="delhi">Delhi NCR</option>
+                            <option value="mumbai">Mumbai</option>
+                            <option value="bangalore">Bangalore</option>
+                            <option value="hyderabad">Hyderabad</option>
+                            <option value="chennai">Chennai</option>
+                            <option value="kolkata">Kolkata</option>
+                            <option value="pune">Pune</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" class="form-control" id="signupPassword" placeholder="Create password" required>
+                    </div>
+                    
+                    <div class="checkbox" style="margin: 20px 0;">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to Terms & Conditions and Privacy Policy</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px;">
+                        Create Account
+                    </button>
+                </form>
+                
+                <div class="social-login">
+                    <p>or sign up with</p>
+                    <div class="social-buttons">
+                        <div class="social-btn" id="googleSignupBtn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn" id="facebookSignupBtn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn" id="appleSignupBtn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="about">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DineGrid</h3>
+                    <p>Your all-in-one dining experience platform. Discover, book, order, and earn rewards.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>For Diners</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-search"></i> Browse Restaurants</a></li>
+                        <li><a href="#"><i class="fas fa-bookmark"></i> Book Tables</a></li>
+                        <li><a href="#"><i class="fas fa-shopping-bag"></i> Order Food</a></li>
+                        <li><a href="#"><i class="fas fa-crown"></i> DineGrid Pro</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Gift Cards</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>For Restaurants</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-handshake"></i> Partner With Us</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Business App</a></li>
+                        <li><a href="#"><i class="fas fa-boxes"></i> Inventory Management</a></li>
+                        <li><a href="#"><i class="fas fa-book"></i> Resources</a></li>
+                        <li><a href="#"><i class="fas fa-headset"></i> Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-briefcase"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-newspaper"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-microphone"></i> Press</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2024 DineGrid. All dining experiences reimagined.</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">Join our early access program to experience dining like never before.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const ctaSignupBtn = document.getElementById('ctaSignupBtn');
+        const authModal = document.getElementById('authModal');
+        const closeAuth = document.getElementById('closeAuth');
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const tabIndicator = document.getElementById('tabIndicator');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const searchBtn = document.getElementById('searchBtn');
+        const businessBtn = document.getElementById('businessBtn');
+        const citiesSlider = document.getElementById('citiesSlider');
+        
+        // Cities data with food specialties
+        const cities = [
+            { name: "Delhi NCR", icon: "fas fa-monument", specialty: "Street Food & Mughlai", color: "#E23744" },
+            { name: "Mumbai", icon: "fas fa-water", specialty: "Seafood & Irani Cafes", color: "#FFB800" },
+            { name: "Bangalore", icon: "fas fa-laptop-code", specialty: "Cafes & Breweries", color: "#60B246" },
+            { name: "Hyderabad", icon: "fas fa-utensils", specialty: "Biryani & Kebabs", color: "#8A2BE2" },
+            { name: "Chennai", icon: "fas fa-music", specialty: "South Indian & Seafood", color: "#FF5A6E" },
+            { name: "Kolkata", icon: "fas fa-book", specialty: "Sweets & Bengali Cuisine", color: "#FF8E53" },
+            { name: "Pune", icon: "fas fa-graduation-cap", specialty: "Maharashtrian & Street Food", color: "#4ECDC4" },
+            { name: "Jaipur", icon: "fas fa-fort-awesome", specialty: "Rajasthani Thali", color: "#FF6B6B" },
+            { name: "Ahmedabad", icon: "fas fa-industry", specialty: "Gujarati & Snacks", color: "#9B59B6" },
+            { name: "Goa", icon: "fas fa-umbrella-beach", specialty: "Goan & Portuguese", color: "#3498DB" }
+        ];
+        
+        // Initialize cities slider
+        function initCities() {
+            citiesSlider.innerHTML = '';
+            cities.forEach(city => {
+                const cityCard = document.createElement('div');
+                cityCard.className = 'city-card';
+                cityCard.innerHTML = `
+                    <div class="city-icon" style="color: ${city.color}">
+                        <i class="${city.icon}"></i>
+                    </div>
+                    <h3>${city.name}</h3>
+                    <p>${city.specialty}</p>
+                `;
+                cityCard.addEventListener('click', () => {
+                    alert(`Exploring ${city.name}! ${city.specialty} awaits you.`);
+                });
+                citiesSlider.appendChild(cityCard);
+            });
+        }
+        
+        // Open auth modal with animation
+        function openAuthModal(tab = 'login') {
+            authModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            if (tab === 'signup') {
+                loginTab.classList.remove('active');
+                signupTab.classList.add('active');
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                tabIndicator.style.left = '50%';
+            } else {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                tabIndicator.style.left = '0';
+            }
+        }
+        
+        // Event listeners
+        loginBtn.addEventListener('click', () => openAuthModal('login'));
+        signupBtn.addEventListener('click', () => openAuthModal('signup'));
+        ctaSignupBtn.addEventListener('click', () => openAuthModal('signup'));
+        
+        closeAuth.addEventListener('click', () => {
+            authModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Tab switching
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+            tabIndicator.style.left = '0';
+        });
+        
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            tabIndicator.style.left = '50%';
+        });
+        
+        // Form submissions
+        document.getElementById('loginFormElement').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            
+            showSuccessMessage(`Welcome back! You'll be redirected to your dashboard shortly. Check ${email} for login confirmation.`);
+            
+            authModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        document.getElementById('signupFormElement').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const city = document.getElementById('signupCity').value;
+            
+            // Update counters with animation
+            animateCounter('restaurantCount', 15000, 15050, 1000);
+            animateCounter('userCount', 1000000, 1000150, 1000);
+            
+            showSuccessMessage(`Welcome to DineGrid, ${name}! Your account has been created successfully. We're preparing amazing dining experiences for you in ${city}. Check ${email} for verification.`);
+            
+            authModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Search button
+        searchBtn.addEventListener('click', () => {
+            const input = document.querySelector('.hero-search input');
+            const query = input.value.trim();
+            
+            if (query) {
+                showSuccessMessage(`Searching for "${query}"... In the full app, you'll see personalized restaurant recommendations.`);
+                input.value = '';
+                openAuthModal('signup');
+            } else {
+                showSuccessMessage('What are you craving today? Try searching for "pizza", "sushi", or "cafe".');
+            }
+        });
+        
+        // Business button
+        businessBtn.addEventListener('click', () => {
+            showSuccessMessage('Thank you for your interest! Our business team will contact you shortly to set up your restaurant profile.');
+        });
+        
+        // Social login buttons
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const platform = this.id.includes('google') ? 'Google' : 
+                               this.id.includes('facebook') ? 'Facebook' : 'Apple';
+                showSuccessMessage(`Connecting with ${platform}... In the full app, you'll be able to sign in seamlessly.`);
+            });
+        });
+        
+        // Helper functions
+        function showSuccessMessage(message) {
+            const alertBox = document.createElement('div');
+            alertBox.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: var(--gradient);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: var(--shadow-heavy);
+                z-index: 3000;
+                max-width: 300px;
+                animation: slideInRight 0.5s ease;
+            `;
+            alertBox.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-check-circle" style="font-size: 1.2rem;"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(alertBox);
+            
+            setTimeout(() => {
+                alertBox.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => document.body.removeChild(alertBox), 500);
+            }, 3000);
+        }
+        
+        function animateCounter(id, start, end, duration) {
+            const element = document.getElementById(id);
+            let startTimestamp = null;
+            
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                
+                element.textContent = value.toLocaleString() + (id === 'userCount' ? '+' : '+');
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            
+            window.requestAnimationFrame(step);
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initCities();
+            
+            // Animate feature cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const animation = entry.target.getAttribute('data-animation');
+                        entry.target.classList.add('animate__animated', `animate__${animation}`);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.feature-card').forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Auto-slide cities
+            let scrollPosition = 0;
+            setInterval(() => {
+                if (scrollPosition < citiesSlider.scrollWidth - citiesSlider.clientWidth) {
+                    scrollPosition += 200;
+                } else {
+                    scrollPosition = 0;
+                }
+                citiesSlider.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+            }, 3000);
+            
+            // Add CSS for alert animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.1)';
+                header.style.padding = '15px 0';
+            } else {
+                header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.05)';
+                header.style.padding = '20px 0';
+            }
+        });
+    </script>
+</body>
+</html>

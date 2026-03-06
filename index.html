@@ -1,0 +1,2739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DineGrid | Discover Culinary Experiences</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #E23744;
+            --primary-dark: #CB202D;
+            --primary-light: #FF5A6E;
+            --secondary: #FFB800;
+            --accent: #60B246;
+            --dark: #1C1C1C;
+            --darker: #111111;
+            --light: #FFFFFF;
+            --gray: #8A8A8A;
+            --light-gray: #F5F5F5;
+            --gradient: linear-gradient(135deg, #E23744, #FF5A6E);
+            --gradient-gold: linear-gradient(135deg, #FFB800, #FFD700);
+            --gradient-green: linear-gradient(135deg, #60B246, #8BC34A);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Aesthetic Glass Elements */
+        .floating-glass {
+            position: absolute;
+            z-index: -1;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            padding: 12px 24px;
+            font-weight: 700;
+            color: var(--dark);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            animation: floatGlass 7s ease-in-out infinite;
+        }
+
+        @keyframes floatGlass {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        .logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 20px rgba(226, 55, 68, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(226, 55, 68, 0.4);
+            animation: pulse 1s;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(226, 55, 68, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-gold {
+            background: var(--gradient-gold);
+            color: var(--dark);
+            box-shadow: 0 5px 20px rgba(255, 184, 0, 0.3);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 184, 0, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FFF5F6 0%, #FFF 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(226, 55, 68, 0.03) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.8rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            color: var(--dark);
+        }
+
+        .hero-text h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-text h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(226, 55, 68, 0.1);
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+
+        .hero-search {
+            display: flex;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(226, 55, 68, 0.1);
+            backdrop-filter: blur(15px);
+            position: relative;
+        }
+
+        .hero-search:focus-within {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(226, 55, 68, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .hero-search input {
+            flex: 1;
+            border: 2px solid #ddd;
+            padding: 18px 30px;
+            font-size: 1rem;
+            border-radius: 50px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--dark);
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+        .hero-search input:focus {
+            border-color: #ccc;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .hero-search input::placeholder {
+            color: #aaa;
+            opacity: 1;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .hero-search input:focus::placeholder {
+            color: #ddd;
+            opacity: 0.6;
+        }
+
+        .hero-search button {
+            background: #e2364c;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(226, 55, 68, 0.3);
+        }
+
+        .hero-search button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(226, 55, 68, 0.4);
+        }
+
+        .search-suggestions-new {
+            position: absolute;
+            top: 100%;
+            left: -30px;
+            right: -30px;
+            background: rgba(255, 255, 255, 0.99);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 30px;
+            margin-top: 12px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.18);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 100;
+            pointer-events: none;
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .search-suggestions-new.active {
+            max-height: 650px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .food-cards-carousel {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            padding: 25px 25px 15px;
+            overflow-y: auto;
+            max-height: 280px;
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .food-cards-carousel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .food-cards-carousel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .food-cards-carousel::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+            opacity: 0.3;
+        }
+
+        .food-card {
+            aspect-ratio: 1;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, var(--light-gray), white);
+            position: relative;
+            overflow: hidden;
+            color: var(--dark);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .food-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: -1;
+        }
+
+        .food-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .food-card:hover {
+            transform: translateY(-12px) scale(1.12);
+            border-color: var(--primary);
+            box-shadow: 0 20px 50px rgba(226, 55, 68, 0.35);
+        }
+
+        .food-card:hover::before {
+            opacity: 0.12;
+        }
+
+        .food-card:hover::after {
+            opacity: 1;
+        }
+
+        .food-card-icon {
+            font-size: 2.8rem;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .food-card:hover .food-card-icon {
+            filter: drop-shadow(0 8px 16px rgba(226, 55, 68, 0.4));
+        }
+
+        .food-card:nth-child(1) .food-card-icon {
+            animation-delay: 0s;
+        }
+
+        .food-card:nth-child(2) .food-card-icon {
+            animation-delay: 0.1s;
+        }
+
+        .food-card:nth-child(3) .food-card-icon {
+            animation-delay: 0.2s;
+        }
+
+        .food-card:nth-child(4) .food-card-icon {
+            animation-delay: 0.3s;
+        }
+
+        .food-card:nth-child(5) .food-card-icon {
+            animation-delay: 0.4s;
+        }
+
+        .food-card:nth-child(6) .food-card-icon {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes notificationSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes notificationFadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50px) scale(0.9);
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes iconBounce {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            70% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .food-card-label {
+            font-size: 0.85rem;
+            text-align: center;
+            line-height: 1.2;
+            transition: all 0.3s;
+        }
+
+        .food-card:hover .food-card-label {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .live-preview {
+            padding: 15px 25px 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .live-preview::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .live-preview::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .live-preview::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+            opacity: 0.3;
+        }
+
+        .live-restaurant-item {
+            background: linear-gradient(135deg, rgba(242, 247, 250, 0.8), rgba(255, 255, 255, 0.6));
+            border-radius: 16px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid var(--primary);
+            border-left: 5px solid var(--primary);
+            animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-restaurant-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .live-restaurant-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .live-restaurant-item:hover {
+            background: linear-gradient(135deg, rgba(226, 55, 68, 0.08), rgba(255, 255, 255, 0.9));
+            box-shadow: 0 12px 35px rgba(226, 55, 68, 0.2);
+            transform: translateY(-6px);
+            border-color: var(--primary-light);
+            border-left-width: 6px;
+            padding-left: 13px;
+        }
+
+        .live-restaurant-item h4 {
+            margin: 0 0 6px 0;
+            font-size: 0.95rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .live-restaurant-item:hover h4 {
+            color: var(--primary);
+        }
+
+        .live-restaurant-item p {
+            margin: 4px 0 0 0;
+            font-size: 0.78rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-restaurant-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 6px;
+            opacity: 0.8;
+        }
+
+        .live-preview-header {
+            padding: 0 25px 15px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-preview-header i {
+            font-size: 0.9rem;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        @keyframes floatHero {
+
+            0%,
+            100% {
+                transform: perspective(1000px) rotateY(-8deg) rotateX(2deg) translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: perspective(1000px) rotateY(-4deg) rotateX(-2deg) translateY(-15px) scale(1.02);
+            }
+        }
+
+        .hero-img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-heavy);
+            transform: perspective(1000px) rotateY(-8deg) rotateX(2deg);
+            animation: floatHero 6s ease-in-out infinite;
+            will-change: transform;
+            transform-origin: center;
+            transition: transform 0.12s cubic-bezier(0.4, 0.0, 0.2, 1);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        
+        .hero-img.hovering {
+            transition: transform 0.12s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .stat-content h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features {
+            padding: 100px 0;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            font-size: 1.8rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            background: var(--gradient);
+            color: white;
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        /* Restaurants Preview */
+        .restaurants-preview {
+            padding: 100px 0;
+        }
+
+        .restaurant-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .restaurant-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .restaurant-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .restaurant-card:hover .restaurant-image img {
+            transform: scale(1.1);
+        }
+
+        .restaurant-rating {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gradient-gold);
+            color: var(--dark);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .restaurant-content {
+            padding: 25px;
+        }
+
+        .restaurant-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .restaurant-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* For Businesses */
+        .business-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #1C1C1C 0%, #2D2D2D 100%);
+            color: white;
+        }
+
+        .business-section .section-title h2 {
+            color: white;
+        }
+
+        .business-section .section-title p {
+            color: #B0B0B0;
+        }
+
+        .business-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .business-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 40px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .business-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .business-card .feature-icon {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .business-card h3 {
+            color: white;
+        }
+
+        .business-card p {
+            color: #B0B0B0;
+        }
+
+        /* Cities Section */
+        .cities-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .cities-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: none;
+        }
+
+        .cities-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .city-card {
+            min-width: 200px;
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .city-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .city-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .city-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .city-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            text-align: center;
+            background: linear-gradient(rgba(28, 28, 28, 0.9), rgba(28, 28, 28, 0.9)),
+                url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            position: relative;
+        }
+
+        .cta-section h2 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-size: 1.2rem;
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 450px;
+            overflow: hidden;
+            box-shadow: var(--shadow-heavy);
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            color: var(--gray);
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            background: white;
+        }
+
+        .auth-tab-indicator {
+            position: absolute;
+            bottom: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: left 0.3s ease;
+            width: 50%;
+        }
+
+        .auth-form {
+            padding: 40px;
+        }
+
+        .close-auth {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-auth:hover {
+            background: rgba(226, 55, 68, 0.1);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .auth-form h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid #E0E0E0;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(226, 55, 68, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .social-login {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .social-login p {
+            color: var(--gray);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .social-login p::before,
+        .social-login p::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #E0E0E0;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #E0E0E0;
+            background: white;
+            color: var(--dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker);
+            color: white;
+            padding: 80px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #B0B0B0;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--gradient);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #B0B0B0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .hero-search {
+                flex-direction: column;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .hero-search input,
+            .hero-search button {
+                width: 100%;
+                margin-bottom: 10px;
+                border-radius: var(--radius);
+            }
+
+            .hero-search input {
+                background: white;
+                box-shadow: var(--shadow);
+            }
+
+            .hero-img {
+                height: 300px !important;
+                max-width: 100%;
+            }
+
+            .hero-image {
+                margin: 30px 0 !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Aesthetic Glass Elements -->
+    <div class="floating-glass" style="top: 18%; left: 8%; animation-delay: 0s;">
+        <i class="fas fa-star" style="color: #FFB800; font-size: 1.2rem;"></i> Top Rated Dining
+    </div>
+    <div class="floating-glass" style="top: 28%; right: 10%; animation-delay: 2s; padding: 5px;">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+            style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%; border: 2px solid white;"> <span
+            style="margin: 0 10px;">Fresh Finds</span>
+    </div>
+    <div class="floating-glass" style="bottom: 20%; left: 12%; animation-delay: 4s;">
+        <i class="fas fa-bolt" style="color: var(--accent); font-size: 1.2rem;"></i> Instant Booking
+    </div>
+    <div class="floating-glass" style="bottom: 30%; right: 15%; animation-delay: 1s;">
+        <i class="fas fa-heart" style="color: #FF5A6E; font-size: 1.2rem;"></i> 1M+ Foodies
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>DineGrid</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Explore</a></li>
+                <li><a href="#restaurants">Restaurants</a></li>
+                <li><a href="#business">For Businesses</a></li>
+                <li><a href="#states">States</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="loginBtn">Log In</button>
+                <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text animate__animated animate__fadeInLeft">
+                <div class="animate__animated animate__pulse animate__infinite"
+                    style="background: linear-gradient(135deg, rgba(255, 184, 0, 0.15) 0%, rgba(226, 55, 68, 0.15) 100%); padding: 12px 28px; border-radius: 40px; display: inline-flex; align-items: center; gap: 12px; font-weight: 800; margin-bottom: 30px; font-size: 1.25rem; border: 2px solid rgba(255, 184, 0, 0.5); box-shadow: 0 10px 25px rgba(226, 55, 68, 0.2); text-transform: uppercase; letter-spacing: 1.5px; animation-duration: 3s;">
+                    <i class="fas fa-crown"
+                        style="color: #FFB800; font-size: 1.8rem; filter: drop-shadow(0 2px 4px rgba(255,184,0,0.5));"></i>
+                    <span
+                        style="background: var(--gradient-gold); -webkit-background-clip: text; background-clip: text; color: transparent;">India's
+                        #1 Dining Experience</span>
+                </div>
+                <h1>Discover <span>Extraordinary</span> Dining Experiences</h1>
+                <p>From cozy cafes to fine dining, find your perfect spot with real-time availability, exclusive offers,
+                    and seamless reservations. Join thousands of food enthusiasts.</p>
+
+                <div class="hero-search" style="position: relative;">
+                    <input type="text" id="searchInput" placeholder="What are you craving today? 🍕">
+                    <button id="searchBtn">
+                        <i class="fas fa-search"></i> Find Food
+                    </button>
+                    <div id="searchSuggestions" class="search-suggestions-new">
+                        <div class="food-cards-carousel" id="foodCarousel"></div>
+                        <div id="livePreview" class="live-preview"></div>
+                    </div>
+                </div>
+
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="restaurantCount">15,000+</h3>
+                            <p>Restaurants</p>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stateCount">20+</h3>
+                            <p>States</p>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="userCount">1M+</h3>
+                            <p>Food Lovers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image animate__animated animate__fadeInRight"
+                style="position: relative; display: flex; justify-content: center;">
+                <img src="vibe-filters-hero.png" alt="Discover Your Vibe" class="hero-img"
+                    style="object-fit: contain; height: 600px; width: 100%;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Food Lovers Choose DineGrid</h2>
+                <p>Experience dining like never before with our innovative features</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                    <h3>Smart Discovery</h3>
+                    <p>Find restaurants based on mood, cuisine, and real-time crowd levels. Personalized recommendations
+                        just for you.</p>
+                    <a href="#" style="color: var(--primary); font-weight: 600; text-decoration: none;">Explore →</a>
+                </div>
+
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Instant Reservations</h3>
+                    <p>Book tables in seconds with live availability. Modify or cancel anytime with zero hassle.</p>
+                    <a href="#" style="color: var(--primary); font-weight: 600; text-decoration: none;">Book Now →</a>
+                </div>
+
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-concierge-bell"></i>
+                    </div>
+                    <h3>Order Ahead</h3>
+                    <p>Skip the wait. Order before you arrive and have food ready on your table when you get there.</p>
+                    <a href="#" style="color: var(--primary); font-weight: 600; text-decoration: none;">Order Now →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Restaurants Preview -->
+    <section class="restaurants-preview" id="restaurants">
+        <div class="container">
+            <div class="section-title">
+                <h2>Curated Dining Experiences</h2>
+                <p>Discover handpicked restaurants loved by our community</p>
+            </div>
+
+            <div class="restaurant-cards">
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <div
+                            style="position: absolute; top: 15px; left: 15px; background: #10b981; color: white; padding: 6px 14px; border-radius: 5px; font-size: 0.85rem; font-weight: bold; z-index: 2; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                            <i class="fas fa-door-open" style="font-size: 1.1rem;"></i> Open Now
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Fine Dining">
+                        <div class="restaurant-rating">
+                            <i class="fas fa-star"></i> 4.9
+                        </div>
+                    </div>
+                    <div class="restaurant-content">
+                        <h3>The Gourmet Table</h3>
+                        <div class="restaurant-tags">
+                            <span class="tag">Fine Dining</span>
+                            <span class="tag">Italian</span>
+                            <span class="tag">Romantic</span>
+                        </div>
+                        <p style="margin-bottom: 10px;">Experience exquisite Italian cuisine in an elegant setting.</p>
+                        <div style="font-size: 0.85rem; color: #666; display: grid; gap: 5px;">
+                            <span><i class="fas fa-map-marker-alt" style="width: 15px;"></i> Connaught Place, New
+                                Delhi</span>
+                            <span><i class="fas fa-wallet" style="width: 15px;"></i> ₹2,500 for two</span>
+                            <span><i class="fas fa-clock" style="width: 15px;"></i> 12:00 PM - 11:30 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <div
+                            style="position: absolute; top: 15px; left: 15px; background: #10b981; color: white; padding: 6px 14px; border-radius: 5px; font-size: 0.85rem; font-weight: bold; z-index: 2; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                            <i class="fas fa-door-open" style="font-size: 1.1rem;"></i> Open Now
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Cafe">
+                        <div class="restaurant-rating">
+                            <i class="fas fa-star"></i> 4.7
+                        </div>
+                    </div>
+                    <div class="restaurant-content">
+                        <h3>Artisan Coffee Hub</h3>
+                        <div class="restaurant-tags">
+                            <span class="tag">Cafe</span>
+                            <span class="tag">Coffee</span>
+                            <span class="tag">Cozy</span>
+                        </div>
+                        <p style="margin-bottom: 10px;">Specialty coffee and fresh pastries in a cozy atmosphere.</p>
+                        <div style="font-size: 0.85rem; color: #666; display: grid; gap: 5px;">
+                            <span><i class="fas fa-map-marker-alt" style="width: 15px;"></i> Koramangala,
+                                Bangalore</span>
+                            <span><i class="fas fa-wallet" style="width: 15px;"></i> ₹800 for two</span>
+                            <span><i class="fas fa-clock" style="width: 15px;"></i> 08:00 AM - 10:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <div
+                            style="position: absolute; top: 15px; left: 15px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; z-index: 2;">
+                            Closed</div>
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Street Food">
+                        <div class="restaurant-rating">
+                            <i class="fas fa-star"></i> 4.8
+                        </div>
+                    </div>
+                    <div class="restaurant-content">
+                        <h3>Urban Street Kitchen</h3>
+                        <div class="restaurant-tags">
+                            <span class="tag">Street Food</span>
+                            <span class="tag">Fusion</span>
+                            <span class="tag">Casual</span>
+                        </div>
+                        <p style="margin-bottom: 10px;">Creative street food fusion in a vibrant urban setting.</p>
+                        <div style="font-size: 0.85rem; color: #666; display: grid; gap: 5px;">
+                            <span><i class="fas fa-map-marker-alt" style="width: 15px;"></i> Bandra West, Mumbai</span>
+                            <span><i class="fas fa-wallet" style="width: 15px;"></i> ₹500 for two</span>
+                            <span><i class="fas fa-clock" style="width: 15px;"></i> Opens at 5:00 PM (Closed)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Businesses -->
+    <section class="business-section" id="business">
+        <div class="container">
+            <div class="section-title">
+                <h2>Power Your Restaurant Business</h2>
+                <p>Comprehensive tools for cafes, restaurants, and resorts</p>
+            </div>
+
+            <div class="business-features">
+                <div class="business-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3>Smart Inventory</h3>
+                    <p>Track supplies, predict demand, and optimize purchases with AI-powered inventory management.</p>
+                </div>
+
+                <div class="business-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Get detailed insights into customer preferences, peak hours, and popular menu items.</p>
+                </div>
+
+                <div class="business-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h3>Reservation System</h3>
+                    <p>Manage bookings, waitlists, and table allocations efficiently from one dashboard.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 50px;">
+                <button class="btn btn-gold" id="businessBtn">
+                    <i class="fas fa-store"></i> Register Your Business
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- States Section -->
+    <section class="cities-section" id="states">
+        <div class="container">
+            <div class="section-title">
+                <h2>Discover Food Across States</h2>
+                <p>We're bringing exceptional dining experiences to every state of India</p>
+            </div>
+
+            <div class="cities-slider" id="statesSlider">
+                <!-- States will be dynamically added -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="animate__animated animate__pulse animate__infinite" style="animation-duration: 2s;">Ready to
+                Transform Your Dining Experience?</h2>
+            <p>Join millions of food lovers who trust DineGrid for discovering amazing dining spots.</p>
+            <p style="margin-bottom: 50px;">Sign up now for exclusive early access offers.</p>
+
+            <button class="btn btn-primary" id="ctaSignupBtn" style="padding: 18px 45px; font-size: 1.2rem;">
+                <i class="fas fa-rocket"></i> Join DineGrid Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-content">
+            <button class="close-auth" id="closeAuth">&times;</button>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Log In</div>
+                <div class="auth-tab" id="signupTab">Sign Up</div>
+                <div class="auth-tab-indicator" id="tabIndicator"></div>
+            </div>
+
+            <div class="auth-form" id="loginForm">
+                <h3>Welcome Back!</h3>
+                <form id="loginFormElement">
+                    <div class="form-group">
+                        <label for="loginEmail">Email or Phone Number</label>
+                        <input type="text" class="form-control" id="loginEmail" placeholder="Enter email or phone"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Enter password"
+                            required>
+                    </div>
+
+                    <div class="form-options">
+                        <div class="checkbox">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px;">
+                        Log In
+                    </button>
+                </form>
+
+                <div class="social-login">
+                    <p>or continue with</p>
+                    <div class="social-buttons">
+                        <div class="social-btn" id="googleBtn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn" id="facebookBtn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn" id="appleBtn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-form" id="signupForm" style="display: none;">
+                <h3>Join DineGrid Today</h3>
+                <form id="signupFormElement">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" class="form-control" id="signupName" placeholder="Enter your full name"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" class="form-control" id="signupEmail" placeholder="Enter email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPhone">Phone Number</label>
+                        <input type="tel" class="form-control" id="signupPhone" placeholder="Enter phone number"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupState">Your State</label>
+                        <select class="form-control" id="signupState" required>
+                            <option value="">Select your state</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" class="form-control" id="signupPassword" placeholder="Create password"
+                            required>
+                    </div>
+
+                    <div class="checkbox" style="margin: 20px 0;">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to Terms & Conditions and Privacy Policy</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px;">
+                        Create Account
+                    </button>
+                </form>
+
+                <div class="social-login">
+                    <p>or sign up with</p>
+                    <div class="social-buttons">
+                        <div class="social-btn" id="googleSignupBtn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn" id="facebookSignupBtn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn" id="appleSignupBtn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Business Modal -->
+    <div class="auth-modal" id="businessModal">
+        <div class="auth-content">
+            <button class="close-auth" id="closeBusiness">&times;</button>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" style="width: 100%; pointer-events: none;">Register Your Business</div>
+            </div>
+
+            <div class="auth-form">
+                <form id="businessFormElement">
+                    <div class="form-group">
+                        <label for="bizName">Restaurant Name</label>
+                        <input type="text" class="form-control" id="bizName" placeholder="Enter restaurant name"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bizEmail">Business Email</label>
+                        <input type="email" class="form-control" id="bizEmail" placeholder="Enter business email"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bizPhone">Phone Number</label>
+                        <input type="tel" class="form-control" id="bizPhone" placeholder="Enter business phone"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bizState">State</label>
+                        <select class="form-control" id="bizState" required>
+                            <option value="">Select city</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px;">
+                        Submit Registration
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="about">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DineGrid</h3>
+                    <p>Your all-in-one dining experience platform. Discover, book, order, and earn rewards.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>For Diners</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-search"></i> Browse Restaurants</a></li>
+                        <li><a href="#"><i class="fas fa-bookmark"></i> Book Tables</a></li>
+                        <li><a href="#"><i class="fas fa-shopping-bag"></i> Order Food</a></li>
+                        <li><a href="#"><i class="fas fa-crown"></i> DineGrid Pro</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Gift Cards</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>For Restaurants</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-handshake"></i> Partner With Us</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Business App</a></li>
+                        <li><a href="#"><i class="fas fa-boxes"></i> Inventory Management</a></li>
+                        <li><a href="#"><i class="fas fa-book"></i> Resources</a></li>
+                        <li><a href="#"><i class="fas fa-headset"></i> Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-briefcase"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-newspaper"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-microphone"></i> Press</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Get In Touch</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:hazarikasubham442@gmail.com"><i class="fas fa-envelope"></i> hazarikasubham442@gmail.com</a></li>
+                        <li><a href="mailto:jeffategs@gmail.com"><i class="fas fa-envelope"></i> jeffategs@gmail.com</a></li>
+                        <li><a href="tel:7636055468"><i class="fas fa-phone"></i> +91 7636055468</a></li>
+                        <li><a href="tel:8099241382"><i class="fas fa-phone"></i> +91 8099241382</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>© 2026 DineGrid. All dining experiences reimagined.</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">Join our early access program to experience dining like
+                    never before.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const ctaSignupBtn = document.getElementById('ctaSignupBtn');
+        const authModal = document.getElementById('authModal');
+        const closeAuth = document.getElementById('closeAuth');
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const tabIndicator = document.getElementById('tabIndicator');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const searchBtn = document.getElementById('searchBtn');
+        const businessBtn = document.getElementById('businessBtn');
+        const statesSlider = document.getElementById('statesSlider');
+
+        // States data
+        const states = [
+            { name: "Andhra Pradesh", icon: "fas fa-pepper-hot", specialty: "Spicy & Biryani", color: "#E23744" },
+            { name: "Arunachal Pradesh", icon: "fas fa-leaf", specialty: "Bamboo Shoots & Momos", color: "#2E8B57" },
+            { name: "Assam", icon: "fas fa-mug-hot", specialty: "Tea & Masor Tenga", color: "#8B4513" },
+            { name: "Bihar", icon: "fas fa-seedling", specialty: "Litti Chokha", color: "#D2691E" },
+            { name: "Chhattisgarh", icon: "fas fa-bowl-rice", specialty: "Rice & Muthia", color: "#F4A460" },
+            { name: "Goa", icon: "fas fa-umbrella-beach", specialty: "Seafood & Vindaloo", color: "#3498DB" },
+            { name: "Gujarat", icon: "fas fa-cookie", specialty: "Dhokla & Thali", color: "#9B59B6" },
+            { name: "Haryana", icon: "fas fa-wheat-awn", specialty: "Dairy & Roti", color: "#CD853F" },
+            { name: "Himachal Pradesh", icon: "fas fa-mountain", specialty: "Madra & Dham", color: "#4682B4" },
+            { name: "Jharkhand", icon: "fas fa-fire", specialty: "Dhuska & Meat", color: "#A0522D" },
+            { name: "Karnataka", icon: "fas fa-coffee", specialty: "Bisi Bele Bath & Dosa", color: "#60B246" },
+            { name: "Kerala", icon: "fas fa-ship", specialty: "Appam & Seafood", color: "#16A085" },
+            { name: "Madhya Pradesh", icon: "fas fa-landmark", specialty: "Poha & Kebabs", color: "#C0392B" },
+            { name: "Maharashtra", icon: "fas fa-water", specialty: "Vada Pav & Misal", color: "#FFB800" },
+            { name: "Manipur", icon: "fas fa-fish", specialty: "Eromba & Fish", color: "#FF6347" },
+            { name: "Meghalaya", icon: "fas fa-cloud", specialty: "Jadoh & Pork", color: "#778899" },
+            { name: "Mizoram", icon: "fas fa-carrot", specialty: "Bai & Bamboo Shoot", color: "#32CD32" },
+            { name: "Nagaland", icon: "fas fa-pepper-hot", specialty: "Smoked Meat & Chutney", color: "#B22222" },
+            { name: "Odisha", icon: "fas fa-om", specialty: "Dalma & Rasgulla", color: "#FF8E53" },
+            { name: "Punjab", icon: "fas fa-tractor", specialty: "Makki Roti & Butter Chicken", color: "#D35400" },
+            { name: "Rajasthan", icon: "fas fa-fort-awesome", specialty: "Dal Bati Churma", color: "#FF6B6B" },
+            { name: "Sikkim", icon: "fas fa-snowflake", specialty: "Thukpa & Momos", color: "#E0FFFF" },
+            { name: "Tamil Nadu", icon: "fas fa-om", specialty: "Idli & Chettinad", color: "#FF5A6E" },
+            { name: "Telangana", icon: "fas fa-star-and-crescent", specialty: "Hyderabadi Biryani", color: "#8A2BE2" },
+            { name: "Tripura", icon: "fas fa-lemon", specialty: "Mui Borok & Fish", color: "#FFA07A" },
+            { name: "Uttar Pradesh", icon: "fas fa-monument", specialty: "Awadhi Kebabs & Chaat", color: "#E23744" },
+            { name: "Uttarakhand", icon: "fas fa-mountain-sun", specialty: "Aloo ke Gutke & Bhatt", color: "#556B2F" },
+            { name: "West Bengal", icon: "fas fa-fish-fins", specialty: "Fish Curry & Sweets", color: "#FF8C00" },
+            { name: "Delhi", icon: "fas fa-building-columns", specialty: "Street Food & Mughlai", color: "#E23744" }
+        ];
+
+        // Initialize states slider
+        function initStates() {
+            statesSlider.innerHTML = '';
+            states.forEach(state => {
+                const stateCard = document.createElement('div');
+                stateCard.className = 'city-card';
+                stateCard.innerHTML = `
+                    <div class="city-icon" style="color: ${state.color}">
+                        <i class="${state.icon}"></i>
+                    </div>
+                    <h3>${state.name}</h3>
+                    <p>${state.specialty}</p>
+                `;
+                stateCard.addEventListener('click', () => {
+                    alert(`Exploring ${state.name}! ${state.specialty} awaits you.`);
+                });
+                statesSlider.appendChild(stateCard);
+            });
+        }
+
+        // Open auth modal with animation
+        function openAuthModal(tab = 'login') {
+            authModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            if (tab === 'signup') {
+                loginTab.classList.remove('active');
+                signupTab.classList.add('active');
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                tabIndicator.style.left = '50%';
+            } else {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                tabIndicator.style.left = '0';
+            }
+        }
+
+        // Event listeners
+        loginBtn.addEventListener('click', () => openAuthModal('login'));
+        signupBtn.addEventListener('click', () => openAuthModal('signup'));
+        ctaSignupBtn.addEventListener('click', () => openAuthModal('signup'));
+
+        closeAuth.addEventListener('click', () => {
+            authModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Tab switching
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+            tabIndicator.style.left = '0';
+        });
+
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            tabIndicator.style.left = '50%';
+        });
+
+        // Form submissions
+        const dbPromise = new Promise((resolve, reject) => {
+            const req = indexedDB.open('DineGridDB', 1);
+            req.onerror = () => reject(req.error);
+            req.onsuccess = () => resolve(req.result);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('registeredUsers')) db.createObjectStore('registeredUsers', { keyPath: 'id', autoIncrement: true });
+                if (!db.objectStoreNames.contains('registeredBusinesses')) db.createObjectStore('registeredBusinesses', { keyPath: 'id', autoIncrement: true });
+                if (!db.objectStoreNames.contains('loginActivity')) db.createObjectStore('loginActivity', { keyPath: 'id', autoIncrement: true });
+            };
+        });
+
+        async function saveData(store, data) {
+            const db = await dbPromise;
+            return new Promise((resolve) => {
+                const tx = db.transaction(store, 'readwrite');
+                tx.objectStore(store).add(data);
+                tx.oncomplete = resolve;
+            });
+        }
+
+        async function getAllData(store) {
+            const db = await dbPromise;
+            return new Promise(resolve => {
+                const tx = db.transaction(store, 'readonly');
+                const req = tx.objectStore(store).getAll();
+                req.onsuccess = () => resolve(req.result);
+            });
+        }
+
+        document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+
+            const users = await getAllData('registeredUsers');
+            const businesses = await getAllData('registeredBusinesses');
+            const isUser = users.some(u => u.email === email || u.phone === email);
+            const isBiz = businesses.some(b => b.email === email || b.phone === email);
+
+            if (!isUser && !isBiz) {
+                alert("Account not found! Please Sign Up or Register your Business first.");
+                document.getElementById('signupTab').click();
+                return;
+            }
+
+            // Save login details to indexedDB
+            await saveData('loginActivity', { email, type: 'login', timestamp: new Date().toLocaleString() });
+
+            showSuccessMessage(`Welcome back! You'll be redirected to your dashboard shortly.`);
+
+            authModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        document.getElementById('signupFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const phone = document.getElementById('signupPhone').value;
+            const state = document.getElementById('signupState').value;
+
+            try {
+                // Save to MongoDB backend
+                const response = await fetch('http://127.0.0.1:5000/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, state })
+                });
+
+                if (!response.ok) throw new Error('Signup failed');
+
+                // Also save locally for redundancy
+                await saveData('registeredUsers', { name, email, phone, state, type: 'signup', timestamp: new Date().toLocaleString() });
+
+                // Update counters with animation
+                animateCounter('restaurantCount', 15000, 15050, 1000);
+                animateCounter('userCount', 1000000, 1000150, 1000);
+
+                showSuccessMessage(`Welcome to DineGrid, ${name}! Your account has been created successfully. We're preparing amazing dining experiences for you in ${state}. Check ${email} for verification.`);
+
+                authModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            } catch (error) {
+                console.error('Signup error:', error);
+                showSuccessMessage(`Welcome to DineGrid, ${name}! Your account has been created. ✓`);
+                authModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Search functionality
+        const handleSearch = () => {
+            const input = document.querySelector('#searchInput');
+            const query = input.value.trim().toLowerCase();
+            const suggestionsPanel = document.getElementById('searchSuggestions');
+            const searchBtn = document.getElementById('searchBtn');
+
+            // Add loading animation to button
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+            searchBtn.style.background = 'var(--gradient)';
+            searchBtn.disabled = true;
+
+            if (query) {
+                // Scroll to restaurants section with smooth animation
+                document.getElementById('restaurants').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                suggestionsPanel.classList.remove('active');
+
+                // Add a delay to show the loading state
+                setTimeout(() => {
+                    // Filter restaurants with animation
+                    const cards = document.querySelectorAll('.restaurant-card');
+                    let foundMatch = false;
+                    let matchCount = 0;
+
+                    cards.forEach((card, index) => {
+                        const text = card.innerText.toLowerCase();
+                        if (text.includes(query)) {
+                            card.style.display = 'block';
+                            card.style.animation = `cardFadeIn 0.5s ease-out ${index * 0.1}s both`;
+                            foundMatch = true;
+                            matchCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Reset button
+                    searchBtn.innerHTML = '<i class="fas fa-search"></i> Find Food';
+                    searchBtn.disabled = false;
+
+                    if (!foundMatch) {
+                        showSuccessMessage(`🔍 We couldn't find "${input.value}" but here are our top recommendations! Try "Italian", "Cafe", or "Street Food" for amazing options.`);
+                        // Show all cards with animation
+                        cards.forEach((card, index) => {
+                            card.style.display = 'block';
+                            card.style.animation = `cardFadeIn 0.3s ease-out ${index * 0.05}s both`;
+                        });
+                        input.value = '';
+                    } else {
+                        showSuccessMessage(`🎉 Found ${matchCount} amazing ${query} option${matchCount > 1 ? 's' : ''}! Scroll down to explore these delicious choices.`);
+                    }
+                }, 800);
+
+            } else {
+                // Reset button immediately for empty search
+                setTimeout(() => {
+                    searchBtn.innerHTML = '<i class="fas fa-search"></i> Find Food';
+                    searchBtn.disabled = false;
+                }, 500);
+
+                showSuccessMessage('🍕 What are you in the mood for today? Start typing to discover amazing restaurants and cuisines!');
+                document.querySelectorAll('.restaurant-card').forEach(card => card.style.display = 'block');
+            }
+        };
+
+        // Search suggestions database with emojis
+        const foodCategories = [
+            { emoji: '🍕', label: 'Pizza', search: 'italian' },
+            { emoji: '☕', label: 'Cafe', search: 'cafe' },
+            { emoji: '🌮', label: 'Street\nFood', search: 'street food' },
+            { emoji: '🍽️', label: 'Fine\nDining', search: 'fine dining' },
+            { emoji: '❤️', label: 'Romantic', search: 'romantic' },
+            { emoji: '🔥', label: 'Spicy', search: 'spicy' },
+            { emoji: '🍜', label: 'Noodles', search: 'fusion' },
+            { emoji: '⭐', label: 'Top Rated', search: 'rated' }
+        ];
+
+        // Restaurant data with more details
+        const restaurantDetails = {
+            'The Gourmet Table': { rating: '4.9', cuisine: 'Italian', badge: '⭐ Premium', price: '₹2,500', location: 'Connaught Place' },
+            'Artisan Coffee Hub': { rating: '4.7', cuisine: 'Cafe', badge: '☕ Cozy', price: '₹800', location: 'Koramangala' },
+            'Urban Street Kitchen': { rating: '4.8', cuisine: 'Street Food', badge: '🔥 Trending', price: '₹500', location: 'Bandra West' }
+        };
+
+        // Initialize search with interactive cards
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsPanel = document.getElementById('searchSuggestions');
+        const foodCarousel = document.getElementById('foodCarousel');
+        const livePreview = document.getElementById('livePreview');
+
+        // Show food cards on focus
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.length === 0) {
+                displayFoodCards();
+                suggestionsPanel.classList.add('active');
+            }
+        });
+
+        // Display interactive food cards
+        function displayFoodCards() {
+            foodCarousel.innerHTML = foodCategories.map((food, index) => 
+                `<div class="food-card" onclick="searchByFood('${food.search}')" style="animation-delay: ${index * 0.08}s;">
+                    <div class="food-card-icon">${food.emoji}</div>
+                    <div class="food-card-label">${food.label}</div>
+                </div>`
+            ).join('');
+        }
+
+        // Live preview of matching restaurants
+        function updateLivePreview(query) {
+            const cards = document.querySelectorAll('.restaurant-card');
+            const matches = [];
+
+            cards.forEach(card => {
+                const name = card.querySelector('h3').textContent;
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    matches.push(name);
+                }
+            });
+
+            if (matches.length > 0 && query.length > 0) {
+                const previewContent = `
+                    <div class="live-preview-header">
+                        <i class="fas fa-utensils"></i>
+                        Matching Restaurants (${matches.length})
+                    </div>
+                    ${matches.slice(0, 6).map(name => {
+                        const details = restaurantDetails[name] || { rating: '4.5', cuisine: 'Cuisine', badge: '✨ New' };
+                        return `<div class="live-restaurant-item" onclick="searchByFood('${name}')">
+                            <h4>
+                                <i class="fas fa-check-circle"></i>${name}
+                            </h4>
+                            <p>
+                                <i class="fas fa-star" style="color: #FFB800;"></i>${details.rating} • ${details.cuisine}
+                            </p>
+                            <div class="live-restaurant-badge">${details.badge}</div>
+                        </div>`
+                    }).join('')}
+                `;
+                livePreview.innerHTML = previewContent;
+            } else if (query.length > 0) {
+                livePreview.innerHTML = `
+                    <div style="padding: 40px 25px; grid-column: 1/-1; text-align: center; color: #999; border-top: 1.5px solid rgba(0, 0, 0, 0.08);">
+                        <div style="font-size: 3rem; margin-bottom: 15px; animation: bounce 2s infinite;">🔍</div>
+                        <p style="font-size: 1rem; margin: 0 0 8px 0; color: #777;">No restaurants match "<strong>${query}</strong>"</p>
+                        <p style="font-size: 0.85rem; margin: 0; color: #aaa;">Try "Italian", "Cafe", or click food cards above</p>
+                        <div style="margin-top: 15px;">
+                            <button onclick="searchByFood('italian')" style="background: var(--gradient); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; margin: 0 5px; transition: all 0.3s;">🍕 Italian</button>
+                            <button onclick="searchByFood('cafe')" style="background: var(--gradient); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; margin: 0 5px; transition: all 0.3s;">☕ Cafe</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                livePreview.innerHTML = '';
+            }
+        }
+
+        // Filter food cards as user types
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            
+            if (query.length === 0) {
+                displayFoodCards();
+                livePreview.innerHTML = '';
+                suggestionsPanel.classList.add('active');
+            } else {
+                // Filter food cards
+                const filtered = foodCategories.filter(food => 
+                    food.label.toLowerCase().includes(query) || 
+                    food.search.toLowerCase().includes(query)
+                );
+                
+                foodCarousel.innerHTML = filtered.length > 0 
+                    ? filtered.map((food, index) => 
+                        `<div class="food-card" onclick="searchByFood('${food.search}')" style="animation-delay: ${index * 0.08}s;">
+                            <div class="food-card-icon">${food.emoji}</div>
+                            <div class="food-card-label">${food.label}</div>
+                        </div>`
+                    ).join('')
+                    : `<div style="grid-column: 1/-1; padding: 30px; text-align: center; color: #999;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">😋</div>
+                        <p>Press Enter or click "Find Food" to search</p>
+                      </div>`;
+                
+                updateLivePreview(query);
+                suggestionsPanel.classList.add('active');
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.hero-search')) {
+                suggestionsPanel.classList.remove('active');
+            }
+        });
+
+        // Global function to search by food
+        window.searchByFood = (query) => {
+            searchInput.value = query;
+            handleSearch();
+            suggestionsPanel.classList.remove('active');
+        };
+
+        searchBtn.addEventListener('click', handleSearch);
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        // Business button
+        businessBtn.addEventListener('click', () => {
+            const businessModal = document.getElementById('businessModal');
+            businessModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+
+        document.getElementById('closeBusiness').addEventListener('click', () => {
+            document.getElementById('businessModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        document.getElementById('businessFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('bizName').value;
+            const email = document.getElementById('bizEmail').value;
+            const phone = document.getElementById('bizPhone').value;
+            const state = document.getElementById('bizState').value;
+
+            try {
+                // Save to MongoDB backend
+                const response = await fetch('http://127.0.0.1:5000/api/business', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, state })
+                });
+
+                if (!response.ok) throw new Error('Registration failed');
+
+                // Also save locally for redundancy
+                await saveData('registeredBusinesses', { name, email, phone, state, timestamp: new Date().toLocaleString() });
+
+                showSuccessMessage(`Registration successful! Our team will contact ${name} shortly.`);
+
+                document.getElementById('businessModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            } catch (error) {
+                console.error('Registration error:', error);
+                showSuccessMessage(`Registration successful! Our team will contact ${name} shortly.`);
+                document.getElementById('businessModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Interactive 3D Parallax Hover ONLY on the Image itself
+        const heroImg = document.querySelector('.hero-img');
+        if (heroImg) {
+            heroImg.addEventListener('mousemove', (e) => {
+                const rect = heroImg.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
+
+                // Apply interactive tilt while hovering over the image
+                heroImg.style.transform = `perspective(1000px) scale(1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            heroImg.addEventListener('mouseleave', () => {
+                // Remove interactive transform and transition back so CSS animation takes back over smoothly
+                heroImg.style.transform = '';
+            });
+        }
+
+        // Social login buttons
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const platform = this.id.includes('google') ? 'Google' :
+                    this.id.includes('facebook') ? 'Facebook' : 'Apple';
+                showSuccessMessage(`Connecting with ${platform}... In the full app, you'll be able to sign in seamlessly.`);
+            });
+        });
+
+        // Helper functions
+        function showSuccessMessage(message) {
+            // Remove any existing notifications
+            const existingNotifications = document.querySelectorAll('.search-notification');
+            existingNotifications.forEach(notif => notif.remove());
+
+            const alertBox = document.createElement('div');
+            alertBox.className = 'search-notification';
+            alertBox.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+                backdrop-filter: blur(25px);
+                -webkit-backdrop-filter: blur(25px);
+                color: var(--dark);
+                padding: 25px 30px;
+                border-radius: 25px;
+                box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2), 0 0 60px rgba(226, 55, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                z-index: 3000;
+                max-width: 400px;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                animation: notificationSlideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+                font-weight: 600;
+                position: relative;
+                overflow: hidden;
+                transform: translateY(100px);
+                opacity: 0;
+            `;
+
+            // Add animated background gradient
+            alertBox.innerHTML = `
+                <div style="position: absolute; inset: 0; background: linear-gradient(45deg, rgba(226, 55, 68, 0.08), rgba(255, 184, 0, 0.06), rgba(96, 176, 70, 0.04)); animation: gradientShift 4s ease-in-out infinite; border-radius: 25px;"></div>
+                <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary)); border-radius: 25px 25px 0 0; animation: shimmer 2s ease-in-out infinite;"></div>
+                <div style="position: relative; z-index: 1; display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; animation: iconBounce 1s ease-out; box-shadow: 0 8px 25px rgba(226, 55, 68, 0.3);">
+                        <i class="fas fa-check-circle" style="color: white; font-size: 1.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 1rem; line-height: 1.5; color: var(--dark); font-weight: 600;">${message}</div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(0,0,0,0.1); border: none; color: #666; cursor: pointer; font-size: 1.4rem; padding: 8px; border-radius: 50%; transition: all 0.3s; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); hover:background: rgba(0,0,0,0.2);">×</button>
+                </div>
+            `;
+
+            document.body.appendChild(alertBox);
+
+            // Auto-remove after 5 seconds with fade out
+            setTimeout(() => {
+                alertBox.style.animation = 'notificationFadeOut 0.6s ease-out';
+                setTimeout(() => {
+                    if (alertBox.parentElement) {
+                        alertBox.remove();
+                    }
+                }, 600);
+            }, 5000);
+        }
+
+        function animateCounter(id, start, end, duration) {
+            const element = document.getElementById(id);
+            let startTimestamp = null;
+
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+
+                element.textContent = value.toLocaleString() + (id === 'userCount' ? '+' : '+');
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initStates();
+
+            // Hero image cursor tracking - simplified with heavy throttling
+            const heroImg = document.querySelector('.hero-img');
+            if (heroImg) {
+                const heroContainer = document.querySelector('.hero-image');
+                let mouseX = 0, mouseY = 0, centerX = 0, centerY = 0;
+                let lastUpdateTime = 0;
+                const throttleDelay = 100;
+                
+                heroContainer.addEventListener('mouseenter', () => {
+                    heroImg.style.animation = 'none';
+                    heroImg.classList.add('hovering');
+                    const rect = heroContainer.getBoundingClientRect();
+                    centerX = rect.width / 2;
+                    centerY = rect.height / 2;
+                });
+                
+                heroContainer.addEventListener('mousemove', (e) => {
+                    const now = Date.now();
+                    if (now - lastUpdateTime < throttleDelay) return;
+                    lastUpdateTime = now;
+                    
+                    const rect = heroContainer.getBoundingClientRect();
+                    mouseX = e.clientX - rect.left;
+                    mouseY = e.clientY - rect.top;
+                    
+                    const rotateY = ((mouseX - centerX) / centerX) * 10;
+                    const rotateX = -((mouseY - centerY) / centerY) * 10;
+                    heroImg.style.transform = `perspective(1500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                
+                heroContainer.addEventListener('mouseleave', () => {
+                    heroImg.classList.remove('hovering');
+                    heroImg.style.animation = 'floatHero 6s ease-in-out infinite';
+                    heroImg.style.transform = 'perspective(1000px) rotateY(-8deg) rotateX(2deg)';
+                });
+            }
+
+            // Animate feature cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const animation = entry.target.getAttribute('data-animation');
+                        entry.target.classList.add('animate__animated', `animate__${animation}`);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.feature-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Auto-slide states
+            let scrollPosition = 0;
+            setInterval(() => {
+                if (scrollPosition < statesSlider.scrollWidth - statesSlider.clientWidth) {
+                    scrollPosition += 200;
+                } else {
+                    scrollPosition = 0;
+                }
+                statesSlider.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+            }, 3000);
+
+            // Add CSS for alert animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.1)';
+                header.style.padding = '15px 0';
+            } else {
+                header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.05)';
+                header.style.padding = '20px 0';
+            }
+        });
+    </script>
+</body>
+
+</html>

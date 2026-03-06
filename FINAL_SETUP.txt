@@ -1,0 +1,42 @@
+🎯 FINAL STEP: Update Your .env File
+
+================================================================================
+
+Your .env file currently has:
+MONGODB_URI=mongodb+srv://admin:YOUR_PASSWORD_HERE@cluster0.mongodb.net/?retryWrites=true&w=majority
+
+REPLACE IT WITH YOUR ACTUAL CONNECTION STRING:
+
+1. Copy your connection string from MongoDB Atlas
+2. Replace YOUR_PASSWORD_HERE with your actual password
+3. Update the cluster name if different
+
+EXAMPLE:
+If your connection string is:
+mongodb+srv://admin:MySecurePass123@cluster0.mongodb.net/?retryWrites=true&w=majority
+
+Then your .env file should be:
+MONGODB_URI=mongodb+srv://admin:MySecurePass123@cluster0.mongodb.net/?retryWrites=true&w=majority
+NODE_ENV=production
+PORT=5000
+
+================================================================================
+
+AFTER UPDATING .env:
+
+Run this command to start your MongoDB-powered server:
+node server-db.js
+
+You should see:
+✅ Connected to MongoDB!
+✅ Server running on http://localhost:5000
+
+================================================================================
+
+TEST IT:
+1. Visit: http://127.0.0.1:5000/api/admin
+2. Login with admin / SUBHAMDAXXX
+3. Sign up users on the main website
+4. Check admin dashboard - data will be stored in MongoDB forever!
+
+================================================================================

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - DineGrid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-container {
+            background: rgba(20, 30, 60, 0.7);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 60px rgba(139, 92, 246, 0.1);
+            padding: 50px;
+            max-width: 420px;
+            width: 100%;
+            display: none;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .login-container.show {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            color: #9ca3af;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: rgba(15, 23, 42, 0.5);
+            color: #e0e0e0;
+        }
+
+        .form-group input::placeholder {
+            color: #6b7280;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(30, 45, 80, 0.6);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #fca5a5;
+            padding: 14px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: none;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dashboard-header {
+            background: rgba(20, 30, 60, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-title h1 {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            font-size: 32px;
+        }
+
+        .dashboard-title p {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: rgba(20, 30, 60, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #8b5cf6, #6366f1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .stat-card h3 {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .stat-card .number {
+            color: #e0e0e0;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-card .icon {
+            color: #8b5cf6;
+            font-size: 28px;
+            opacity: 0.7;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .section {
+            background: rgba(20, 30, 60, 0.6);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .section h2 {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+            color: #d0d5dd;
+        }
+
+        table tr:hover {
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .no-data i {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 20px;
+            color: #8b5cf6;
+            opacity: 0.5;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .dashboard-title h1 {
+                font-size: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 24px;
+            }
+
+            .stat-card .number {
+                font-size: 32px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .section h2 {
+                font-size: 18px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th, table td {
+                padding: 10px;
+            }
+
+            .logout-btn {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN PAGE -->
+    <div class="login-container show" id="loginPage">
+        <div class="login-header">
+            <h1>🍽️ DineGrid Admin</h1>
+            <p>Access your dashboard to manage data</p>
+        </div>
+
+        <div class="error-message" id="errorMsg"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">Login</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; color: #999; font-size: 13px;">
+            <p><strong>Demo Credentials:</strong></p>
+            <p>Username: <code>admin</code></p>
+            <p>Password: <code>SUBHAMDAXXX</code></p>
+            <div class="info-box">
+                ✨ Data is stored on your backend server (server.js), not in this HTML file. The admin page just displays it.
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboardPage">
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <h1>📊 Admin Dashboard</h1>
+                <p>All Your DineGrid Data</p>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="number" id="statUsers">0</div>
+                <div class="icon"><i class="fas fa-users"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Businesses</h3>
+                <div class="number" id="statBusinesses">0</div>
+                <div class="icon"><i class="fas fa-store"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Logins</h3>
+                <div class="number" id="statLogins">0</div>
+                <div class="icon"><i class="fas fa-sign-in-alt"></i></div>
+            </div>
+        </div>
+
+        <!-- USERS SECTION -->
+        <div class="section">
+            <h2>👥 Recent Signups</h2>
+            <div id="usersContainer">
+                <div class="no-data">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Loading users...
+                </div>
+            </div>
+        </div>
+
+        <!-- BUSINESSES SECTION -->
+        <div class="section">
+            <h2>🏪 Recent Business Registrations</h2>
+            <div id="businessContainer">
+                <div class="no-data">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Loading businesses...
+                </div>
+            </div>
+        </div>
+
+        <!-- LOGIN ACTIVITY SECTION -->
+        <div class="section">
+            <h2>📱 Login Activity</h2>
+            <div id="loginsContainer">
+                <div class="no-data">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Loading login activity...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000';
+        let adminToken = localStorage.getItem('adminToken');
+
+        // Check on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Admin page loaded');
+            console.log('🔑 Token exists:', adminToken ? 'YES' : 'NO');
+            
+            if (adminToken) {
+                showDashboard();
+                loadAllData();
+            } else {
+                showLoginPage();
+            }
+
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('errorMsg');
+
+            console.log('🔐 Attempting login with:', username);
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            errorMsg.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                console.log('📨 Server response:', data);
+
+                if (data.success && data.token) {
+                    adminToken = data.token;
+                    localStorage.setItem('adminToken', adminToken);
+                    console.log('✅ Login successful!');
+                    
+                    showDashboard();
+                    document.getElementById('loginForm').reset();
+                    loadAllData();
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (err) {
+                console.error('❌ Login error:', err);
+                errorMsg.textContent = '❌ ' + err.message;
+                errorMsg.classList.add('show');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+
+        function handleLogout() {
+            console.log('🚪 Logging out...');
+            localStorage.removeItem('adminToken');
+            adminToken = null;
+            showLoginPage();
+            document.getElementById('loginForm').reset();
+        }
+
+        function showLoginPage() {
+            document.getElementById('loginPage').classList.add('show');
+            document.getElementById('dashboardPage').classList.remove('show');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').classList.remove('show');
+            document.getElementById('dashboardPage').classList.add('show');
+        }
+
+        async function loadAllData() {
+            console.log('📊 Loading all dashboard data...');
+            await Promise.all([
+                loadStats(),
+                loadUsers(),
+                loadBusinesses(),
+                loadLogins()
+            ]);
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/stats`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                const data = await response.json();
+                console.log('📊 Stats:', data);
+
+                document.getElementById('statUsers').textContent = data.totalUsers || 0;
+                document.getElementById('statBusinesses').textContent = data.totalBusinesses || 0;
+                document.getElementById('statLogins').textContent = data.totalLogins || 0;
+            } catch (err) {
+                console.error('❌ Error loading stats:', err);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/users?limit=50`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                const result = await response.json();
+                const users = result.data || result || [];
+
+                let html = '';
+                if (users.length > 0) {
+                    html = `<table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>State</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    users.forEach(u => {
+                        html += `<tr>
+                            <td>${u.name || '-'}</td>
+                            <td>${u.email || '-'}</td>
+                            <td>${u.phone || '-'}</td>
+                            <td>${u.state || '-'}</td>
+                            <td>${new Date(u.createdAt || u.timestamp).toLocaleDateString()}</td>
+                        </tr>`;
+                    });
+                    html += `</tbody></table>`;
+                } else {
+                    html = '<div class="no-data"><i class="fas fa-inbox"></i> No signups yet</div>';
+                }
+                document.getElementById('usersContainer').innerHTML = html;
+            } catch (err) {
+                console.error('❌ Error loading users:', err);
+                document.getElementById('usersContainer').innerHTML = '<div class="no-data">❌ Error loading users</div>';
+            }
+        }
+
+        async function loadBusinesses() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/businesses?limit=50`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                const result = await response.json();
+                const businesses = result.data || result || [];
+
+                let html = '';
+                if (businesses.length > 0) {
+                    html = `<table>
+                        <thead>
+                            <tr>
+                                <th>Business Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>City</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    businesses.forEach(b => {
+                        html += `<tr>
+                            <td>${b.name || '-'}</td>
+                            <td>${b.email || '-'}</td>
+                            <td>${b.phone || '-'}</td>
+                            <td>${b.city || b.state || '-'}</td>
+                            <td>${new Date(b.createdAt || b.timestamp).toLocaleDateString()}</td>
+                        </tr>`;
+                    });
+                    html += `</tbody></table>`;
+                } else {
+                    html = '<div class="no-data"><i class="fas fa-store"></i> No businesses yet</div>';
+                }
+                document.getElementById('businessContainer').innerHTML = html;
+            } catch (err) {
+                console.error('❌ Error loading businesses:', err);
+                document.getElementById('businessContainer').innerHTML = '<div class="no-data">❌ Error loading businesses</div>';
+            }
+        }
+
+        async function loadLogins() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/logins?limit=50`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                const result = await response.json();
+                const logins = result.data || result || [];
+
+                let html = '';
+                if (logins.length > 0) {
+                    html = `<table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    logins.forEach(l => {
+                        html += `<tr>
+                            <td>${l.email || '-'}</td>
+                            <td>${l.type || l.action || '-'}</td>
+                            <td>${new Date(l.timestamp).toLocaleDateString()} ${new Date(l.timestamp).toLocaleTimeString()}</td>
+                        </tr>`;
+                    });
+                    html += `</tbody></table>`;
+                } else {
+                    html = '<div class="no-data"><i class="fas fa-history"></i> No login activity yet</div>';
+                }
+                document.getElementById('loginsContainer').innerHTML = html;
+            } catch (err) {
+                console.error('❌ Error loading logins:', err);
+                document.getElementById('loginsContainer').innerHTML = '<div class="no-data">❌ Error loading logins</div>';
+            }
+        }
+
+        // Auto-refresh every 30 seconds when dashboard is open
+        setInterval(() => {
+            if (adminToken && document.getElementById('dashboardPage').classList.contains('show')) {
+                console.log('🔄 Auto-refreshing data...');
+                loadAllData();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
