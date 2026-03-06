@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-const uri = "mongodb+srv://admin:Password123@cluster0.m6phulv.mongodb.net/?appName=Cluster0";
+const uri = "mongodb+srv://FlexGOD:jyMbCUA3n91WAuEk@cluster0.m6phulv.mongodb.net/?appName=Cluster0";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
