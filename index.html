@@ -1502,10 +1502,10 @@
                 <button class="btn btn-primary" id="signupBtn">Sign Up</button>
 
                 <!-- Instagram-style user badge (hidden by default) -->
-                <div id="userProfileBadge" style="display: none; align-items: center; gap: 10px; cursor: pointer; padding: 6px 16px; border-radius: 30px; background: rgba(226,55,68,0.1); border: 1px solid var(--primary); transition: var(--transition);">
+                <div id="userProfileBadge" onclick="handleLogout()" style="display: none; align-items: center; gap: 10px; cursor: pointer; padding: 6px 16px; border-radius: 30px; background: rgba(226,55,68,0.1); border: 1px solid var(--primary); transition: var(--transition);" title="Click to Log Out">
                     <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=E23744&color=fff&rounded=true&font-size=0.4" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 2px 8px rgba(226,55,68,0.3);">
                     <span id="userNameDisplay" style="font-weight: 600; color: var(--primary); font-size: 0.95rem;">Guest</span>
-                    <i class="fas fa-chevron-down" style="color: var(--primary); font-size: 0.8rem;"></i>
+                    <i class="fas fa-sign-out-alt" style="color: var(--primary); font-size: 0.9rem;"></i>
                 </div>
             </div>
         </div>
@@ -2251,6 +2251,26 @@
                 avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=E23744&color=fff&rounded=true&font-size=0.4&bold=true`;
             }
         }
+
+        // Global Logout Function
+        window.handleLogout = function() {
+            if (confirm("Are you sure you want to log out of your elite DineGrid account?")) {
+                localStorage.removeItem('dinegrid_user');
+                
+                const loginBtn = document.getElementById('loginBtn');
+                const signupBtn = document.getElementById('signupBtn');
+                const userBadge = document.getElementById('userProfileBadge');
+                
+                if (userBadge) userBadge.style.display = 'none';
+                
+                // On mobile, the buttons are flex inside the menu normally.
+                // We reset their inline display so CSS handles their block/inline-block
+                if (loginBtn) loginBtn.style.display = '';
+                if (signupBtn) signupBtn.style.display = '';
+                
+                showSuccessMessage("You have been securely logged out. We hope to see you again soon! 👋");
+            }
+        };
         
         // Auto-check on page load
         window.addEventListener('DOMContentLoaded', () => {
