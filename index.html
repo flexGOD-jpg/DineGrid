@@ -2296,11 +2296,13 @@
                 });
 
                 if (!response.ok) throw new Error('Login track failed');
+                
+                const data = await response.json();
+                const userNameToDisplay = data.name || email.split('@')[0];
 
                 // Save locally too for offline capability
                 await saveData('loginActivity', { email, type: 'login', timestamp: new Date().toLocaleString() });
 
-                const userNameToDisplay = email.split('@')[0];
                 setUserLoggedIn(userNameToDisplay);
                 showSuccessMessage(`✨ Welcome back to DineGrid, ${userNameToDisplay}! Your premium culinary journey continues inside. Let's find your next perfect meal. 🍽️`);
 

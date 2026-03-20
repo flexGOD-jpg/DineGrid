@@ -83,9 +83,20 @@ app.post('/api/business', async (req, res) => {
 
 app.post('/api/login-activity', async (req, res) => {
   try {
+    const { email, type } = req.body;
+    let name = email ? email.split('@')[0] : 'Guest';
+    
+    // Look up the actual name from the users collection
+    if (email) {
+      const existingUser = await db.collection('users').findOne({ email: email });
+      if (existingUser && existingUser.name) {
+        name = existingUser.name;
+      }
+    }
+
     const login = { ...req.body, timestamp: new Date() };
     await db.collection('logins').insertOne(login);
-    res.status(201).json({ message: 'Login recorded' });
+    res.status(201).json({ message: 'Login recorded', name: name });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
