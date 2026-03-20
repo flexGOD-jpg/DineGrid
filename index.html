@@ -1497,9 +1497,16 @@
                 <li><a href="#states">States</a></li>
                 <li><a href="#about">About</a></li>
             </ul>
-            <div class="nav-buttons">
+            <div class="nav-buttons" id="navButtonsContainer">
                 <button class="btn btn-outline" id="loginBtn">Log In</button>
                 <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+
+                <!-- Instagram-style user badge (hidden by default) -->
+                <div id="userProfileBadge" style="display: none; align-items: center; gap: 10px; cursor: pointer; padding: 6px 16px; border-radius: 30px; background: rgba(226,55,68,0.1); border: 1px solid var(--primary); transition: var(--transition);">
+                    <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=E23744&color=fff&rounded=true&font-size=0.4" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 2px 8px rgba(226,55,68,0.3);">
+                    <span id="userNameDisplay" style="font-weight: 600; color: var(--primary); font-size: 0.95rem;">Guest</span>
+                    <i class="fas fa-chevron-down" style="color: var(--primary); font-size: 0.8rem;"></i>
+                </div>
             </div>
         </div>
     </header>
@@ -2227,6 +2234,30 @@
 
         const API_URL = (window.location.protocol === 'file:') ? 'http://localhost:5000' : '';
 
+        // Add Instagram-style Login State Manager
+        function setUserLoggedIn(name) {
+            localStorage.setItem('dinegrid_user', name);
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const userBadge = document.getElementById('userProfileBadge');
+            const nameDisplay = document.getElementById('userNameDisplay');
+            const avatar = document.getElementById('userAvatar');
+            
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (signupBtn) signupBtn.style.display = 'none';
+            if (userBadge) {
+                userBadge.style.display = 'flex';
+                nameDisplay.textContent = name;
+                avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=E23744&color=fff&rounded=true&font-size=0.4&bold=true`;
+            }
+        }
+        
+        // Auto-check on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('dinegrid_user');
+            if (savedUser) setUserLoggedIn(savedUser);
+        });
+
         document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -2250,7 +2281,9 @@
                 // Save locally too for offline capability
                 await saveData('loginActivity', { email, type: 'login', timestamp: new Date().toLocaleString() });
 
-                showSuccessMessage(`Welcome back! You have successfully logged in as ${email}.`);
+                const userNameToDisplay = email.split('@')[0];
+                setUserLoggedIn(userNameToDisplay);
+                showSuccessMessage(`✨ Welcome back to DineGrid, ${userNameToDisplay}! Your premium culinary journey continues inside. Let's find your next perfect meal. 🍽️`);
 
                 authModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
@@ -2260,7 +2293,11 @@
 
                 // Fallback local response
                 await saveData('loginActivity', { email, type: 'login', timestamp: new Date().toLocaleString() });
-                showSuccessMessage(`Welcome back! You have successfully logged in. \u2714\uFE0F`);
+                
+                const userNameToDisplay = email.split('@')[0];
+                setUserLoggedIn(userNameToDisplay);
+                showSuccessMessage(`✨ Welcome back to DineGrid, ${userNameToDisplay}! Your premium culinary journey continues inside. Let's find your next perfect meal. 🍽️`);
+                
                 authModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             } finally {
@@ -2294,26 +2331,24 @@
                 // Also save locally for redundancy
                 await saveData('registeredUsers', { name, email, phone, state, type: 'signup', timestamp: new Date().toLocaleString() });
 
-                // Notification: hi, welcome to DineGrid
-                showSuccessMessage(`Hi ${name}, welcome to DineGrid! Your account has been created successfully. You can now log in.`);
+                setUserLoggedIn(name);
+                showSuccessMessage(`🎉 Welcome to the DineGrid Elite Family, ${name}! You are completely verified and officially checked in. Let's explore the finest luxury dining around you! 🥂`);
 
-                // Switch to login tab smoothly rather than closing modal
-                document.getElementById('loginTab').click();
+                authModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
                 document.getElementById('signupFormElement').reset();
-
-                // Auto-fill login email for convenience
-                document.getElementById('loginEmail').value = email;
             } catch (error) {
                 console.error('Signup error:', error);
                 
                 // Also save locally for redundancy
                 await saveData('registeredUsers', { name, email, phone, state, type: 'signup', timestamp: new Date().toLocaleString() });
 
-                showSuccessMessage(`Hi ${name}, welcome to DineGrid! Your account has been created successfully. You can now log in.`);
+                setUserLoggedIn(name);
+                showSuccessMessage(`🎉 Welcome to the DineGrid Elite Family, ${name}! You are completely verified and officially checked in. Let's explore the finest luxury dining around you! 🥂`);
 
-                document.getElementById('loginTab').click();
+                authModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
                 document.getElementById('signupFormElement').reset();
-                document.getElementById('loginEmail').value = email;
             } finally {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
