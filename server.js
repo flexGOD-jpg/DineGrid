@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-const uri = "mongodb+srv://FlexGOD:DINEGRID10@cluster0.m6phulv.mongodb.net/?appName=Cluster0";
+const uri = "mongodb+srv://FlexGOD:DINEGRID10@cluster0.6ptpqhj.mongodb.net/?appName=Cluster0";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
