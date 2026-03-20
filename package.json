@@ -11,10 +11,12 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
-    "mongoose": "^8.2.0",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
-    "jsonwebtoken": "^9.0.2"
+    "mongoose": "^8.23.0",
+    "nodemon": "^3.1.14",
+    "path": "^0.12.7"
   },
   "keywords": [
     "restaurant",
@@ -23,5 +25,14 @@
     "express"
   ],
   "author": "DineGrid",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flexGOD-jpg/DineGrid.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/flexGOD-jpg/DineGrid/issues"
+  },
+  "homepage": "https://github.com/flexGOD-jpg/DineGrid#readme"
 }

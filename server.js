@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-const uri = "mongodb+srv://FlexGOD:jyMbCUA3n91WAuEk@cluster0.m6phulv.mongodb.net/?appName=Cluster0";
+const uri = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
 const db = client.db("dinegrid");
 
 client.connect().then(() => {
-  console.log("✅ MongoDB Atlas connected successfully!");
+  console.log("✅ Local MongoDB connected successfully!");
 }).catch(error => {
   console.error("⚠️ Error connecting to MongoDB:", error);
 });
@@ -85,6 +85,16 @@ app.post('/api/login-activity', async (req, res) => {
     const login = { ...req.body, timestamp: new Date() };
     await db.collection('logins').insertOne(login);
     res.status(201).json({ message: 'Login recorded' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/reset-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(`[Email Mock] Reset link queued for delivery to: ${email}`);
+    res.status(200).json({ success: true, message: `Password reset link sent to ${email}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
