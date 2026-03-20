@@ -29,9 +29,10 @@ const client = new MongoClient(uri, {
 const db = client.db("dinegrid");
 
 client.connect().then(() => {
-  console.log("✅ Local MongoDB connected successfully!");
+  console.log("✅ MongoDB Atlas connected successfully!");
 }).catch(error => {
   console.error("⚠️ Error connecting to MongoDB:", error);
+  process.exit(1);
 });
 
 // -------------------- MIDDLEWARE --------------------
