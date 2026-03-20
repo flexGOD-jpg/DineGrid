@@ -1573,7 +1573,7 @@
             <div class="hero-image animate__animated animate__fadeInRight"
                 style="position: relative; display: flex; justify-content: center;">
                 <img src="vibe-filters-hero.png" alt="Discover Your Vibe" class="hero-img"
-                    style="object-fit: contain; height: 600px; width: 100%;">
+                    style="object-fit: contain; height: auto; max-height: 600px; width: 100%;">
             </div>
         </div>
     </section>
@@ -1750,7 +1750,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 50px;">
-                <button class="btn btn-gold" id="businessBtn">
+                <button class="btn btn-gold" id="businessBtn" style="padding: 20px 50px; font-size: 1.4rem; box-shadow: var(--shadow-heavy); letter-spacing: 1px;">
                     <i class="fas fa-store"></i> Register Your Business
                 </button>
             </div>
@@ -1779,7 +1779,7 @@
             <p>Join millions of food lovers who trust DineGrid for discovering amazing dining spots.</p>
             <p style="margin-bottom: 50px;">Sign up now for exclusive early access offers.</p>
 
-            <button class="btn btn-primary" id="ctaSignupBtn" style="padding: 18px 45px; font-size: 1.2rem;">
+            <button class="btn btn-primary" id="ctaSignupBtn" style="padding: 22px 60px; font-size: 1.5rem; box-shadow: var(--shadow-heavy); letter-spacing: 1px;">
                 <i class="fas fa-rocket"></i> Join DineGrid Now
             </button>
         </div>
@@ -2331,24 +2331,24 @@
                 // Also save locally for redundancy
                 await saveData('registeredUsers', { name, email, phone, state, type: 'signup', timestamp: new Date().toLocaleString() });
 
-                setUserLoggedIn(name);
-                showSuccessMessage(`🎉 Welcome to the DineGrid Elite Family, ${name}! You are completely verified and officially checked in. Let's explore the finest luxury dining around you! 🥂`);
-
-                authModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+                document.getElementById('loginTab').click();
                 document.getElementById('signupFormElement').reset();
+                document.getElementById('loginEmail').value = email;
+
+                showSuccessMessage(`🎉 Welcome to DineGrid, ${name}! Your elite account is ready. Please log in to connect to your profile.`);
+
             } catch (error) {
                 console.error('Signup error:', error);
                 
                 // Also save locally for redundancy
                 await saveData('registeredUsers', { name, email, phone, state, type: 'signup', timestamp: new Date().toLocaleString() });
 
-                setUserLoggedIn(name);
-                showSuccessMessage(`🎉 Welcome to the DineGrid Elite Family, ${name}! You are completely verified and officially checked in. Let's explore the finest luxury dining around you! 🥂`);
-
-                authModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+                document.getElementById('loginTab').click();
                 document.getElementById('signupFormElement').reset();
+                document.getElementById('loginEmail').value = email;
+
+                showSuccessMessage(`🎉 Welcome to DineGrid, ${name}! Your elite account is ready. Please log in to connect to your profile.`);
+
             } finally {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
