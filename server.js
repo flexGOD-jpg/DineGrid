@@ -63,7 +63,7 @@ app.post('/api/admin/login', (req, res) => {
 // -------------------- USER ENDPOINTS --------------------
 app.post('/api/signup', async (req, res) => {
   try {
-    const user = { ...req.body, timestamp: new Date() };
+    const user = { ...req.body, readable_date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'long', timeStyle: 'short' }) + ' (IST)', timestamp: new Date() };
     await db.collection('users').insertOne(user);
     res.status(201).json({ message: 'User created successfully' });
   } catch (err) {
@@ -73,7 +73,7 @@ app.post('/api/signup', async (req, res) => {
 
 app.post('/api/business', async (req, res) => {
   try {
-    const biz = { ...req.body, timestamp: new Date() };
+    const biz = { ...req.body, readable_date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'long', timeStyle: 'short' }) + ' (IST)', timestamp: new Date() };
     await db.collection('businesses').insertOne(biz);
     res.status(201).json({ message: 'Business registered successfully' });
   } catch (err) {
@@ -94,7 +94,7 @@ app.post('/api/login-activity', async (req, res) => {
       }
     }
 
-    const login = { ...req.body, timestamp: new Date() };
+    const login = { ...req.body, readable_date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'long', timeStyle: 'short' }) + ' (IST)', timestamp: new Date() };
     await db.collection('logins').insertOne(login);
     res.status(201).json({ message: 'Login recorded', name: name });
   } catch (err) {
