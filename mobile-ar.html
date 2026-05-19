@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>4D SMART MENU – DineGrid AR</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Model Viewer -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #0b0e0b; 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            overflow: hidden; 
+            color: white; 
+        }
+
+        /* Nav Header styles (Screenshot 1) */
+        .nav-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            padding: 0 24px;
+            box-sizing: border-box;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, rgba(11, 14, 11, 0.95), rgba(11, 14, 11, 0));
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            width: 42px;
+            height: 42px;
+            background: rgba(11, 14, 11, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #F4CE14; /* Golden Brand Font */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            text-align: center;
+            max-width: 70%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Carousel Area (Full screen AR by default) */
+        .carousel-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .carousel-arrow {
+            background: rgba(11, 14, 11, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #F4CE14;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 110;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .carousel-arrow:active {
+            transform: translateY(-50%) scale(0.9);
+            background: rgba(11, 14, 11, 0.8);
+        }
+
+        .carousel-arrow-left {
+            left: 16px;
+        }
+
+        .carousel-arrow-right {
+            right: 16px;
+        }
+
+        .viewer-wrapper {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            --poster-color: transparent;
+            transition: all 0.4s ease;
+        }
+
+        /* Simulated AR Camera view styles (Screenshot 2, 3, 5) */
+        #bg-camera {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 1;
+            display: block; /* Always visible */
+        }
+
+        #bg-fallback {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 1;
+            display: none;
+            filter: brightness(0.4) blur(4px);
+        }
+
+        #bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent; /* Transparent so camera feed is crisp */
+            z-index: 2;
+            pointer-events: none;
+            display: block; /* Always visible */
+        }
+
+        #ar-instructions {
+            position: absolute;
+            top: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 150;
+            display: block; /* Always visible */
+            background: rgba(11, 14, 11, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+        }
+
+        #native-ar-trigger {
+            position: absolute;
+            bottom: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 150;
+            display: flex; /* Always visible */
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 28px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.55);
+            cursor: pointer;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        #native-ar-trigger:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        #capture-btn-container {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 150;
+            display: block; /* Always visible */
+        }
+
+        .capture-shutter {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+        }
+
+        .capture-shutter:active {
+            transform: scale(0.9);
+        }
+
+        /* Dynamic Hotspot styling matching Screenshots 3 & 5 */
+        .Hotspot {
+            background: transparent;
+            border: none;
+            position: relative;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            z-index: 120;
+            display: none; /* Shown dynamically */
+        }
+
+        .HotspotDot {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            border: 2.5px solid #F4CE14; /* Brand Gold border */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .HotspotDot i {
+            font-size: 0.85rem;
+        }
+
+        /* Connects from dot to right annotation (default) */
+        .line-right {
+            position: absolute;
+            top: 16px;
+            left: 32px;
+            width: 48px;
+            height: 1.5px;
+            background: rgba(255, 255, 255, 0.7);
+            transform-origin: left center;
+            transform: rotate(-25deg);
+            pointer-events: none;
+        }
+
+        /* Connects from dot to left annotation */
+        .line-left {
+            position: absolute;
+            top: 16px;
+            right: 32px;
+            width: 48px;
+            height: 1.5px;
+            background: rgba(255, 255, 255, 0.7);
+            transform-origin: right center;
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+
+        .HotspotAnnotation {
+            position: absolute;
+            background: rgba(15, 22, 15, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 14px;
+            padding: 10px 14px;
+            color: white;
+            min-width: 145px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            pointer-events: auto;
+            opacity: 0;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .Hotspot[data-visible="true"] .HotspotAnnotation {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .anno-right {
+            left: 78px;
+            top: -40px;
+        }
+
+        .anno-left {
+            right: 78px;
+            top: -40px;
+        }
+
+        .ingredient-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            color: #F4CE14;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .ingredient-bullets {
+            margin: 0;
+            padding-left: 0;
+            font-size: 0.7rem;
+            color: #d8d8d8;
+            list-style-type: none;
+        }
+
+        .ingredient-bullets li {
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ingredient-bullets li::before {
+            content: '✓';
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 3px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 200;
+        }
+
+        .update-bar {
+            height: 100%;
+            background: #F4CE14;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .floating-plus-one {
+            position: absolute;
+            background: linear-gradient(135deg, #F9D939 0%, #F4CE14 100%);
+            color: #0B0E0B;
+            font-weight: 800;
+            font-size: 0.95rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 10000;
+            animation: floatUpFade 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: 0 6px 20px rgba(244, 206, 20, 0.5);
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation (Screenshot 1) -->
+    <div class="nav-header">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <div class="brand-title">THE GOLDEN OAK</div>
+    </div>
+
+    <!-- Simulated AR Camera Background elements -->
+    <video id="bg-camera" autoplay playsinline muted></video>
+    <img id="bg-fallback" src="" alt="food background">
+    <div id="bg-overlay"></div>
+
+    <!-- Floating Camera Mode Instructions -->
+    <div id="ar-instructions">💡 Drag with 2 fingers to move food • Pinch to zoom</div>
+
+    <!-- Native AR Launcher Floating Button -->
+    <button id="native-ar-trigger" onclick="triggerNativeAR()">
+        <i class="fas fa-cube"></i> View in your space (Real AR)
+    </button>
+
+    <!-- Main Swiper Carousel Container (Screenshot 1) -->
+    <div class="carousel-container">
+        <button class="carousel-arrow carousel-arrow-left" onclick="prevFood()"><i class="fas fa-chevron-left"></i></button>
+        
+        <div class="viewer-wrapper">
+            <!-- WebXR model viewer -->
+            <model-viewer id="foodViewer" 
+                src="assets/grilled_chicken_salad.glb" 
+                ios-src="assets/grilled_chicken_salad.usdz"
+                alt="Realistic 3D Food Model" 
+                auto-rotate 
+                rotation-per-second="12deg"
+                camera-controls 
+                ar 
+                ar-modes="webxr scene-viewer quick-look" 
+                ar-scale="auto"
+                shadow-intensity="1" 
+                shadow-softness="0.5"
+                exposure="1.8"
+                environment-image="neutral"
+                interaction-prompt="none"
+                disable-pan="false">
+                
+                <!-- Hotspots 1 & 3 (Lines pointing Right) -->
+                <button class="Hotspot" slot="hotspot-1" data-position="0 0.05 0.03" data-normal="0 1 0.2" data-visible="false">
+                    <div class="HotspotDot"></div>
+                    <div class="line-right"></div>
+                    <div class="HotspotAnnotation anno-right">
+                        <div class="ingredient-title" id="hs1-title">🌿 Ingredient</div>
+                        <ul class="ingredient-bullets" id="hs1-bullets"></ul>
+                    </div>
+                </button>
+
+                <button class="Hotspot" slot="hotspot-3" data-position="-0.06 0.04 -0.04" data-normal="-0.5 1 -0.5" data-visible="false">
+                    <div class="HotspotDot"></div>
+                    <div class="line-right"></div>
+                    <div class="HotspotAnnotation anno-right" style="top: 10px;">
+                        <div class="ingredient-title" id="hs3-title">🌿 Ingredient</div>
+                        <ul class="ingredient-bullets" id="hs3-bullets"></ul>
+                    </div>
+                </button>
+
+                <!-- Hotspots 2 & 4 (Lines pointing Left) -->
+                <button class="Hotspot" slot="hotspot-2" data-position="0 0.02 -0.06" data-normal="0 1 -0.8" data-visible="false">
+                    <div class="HotspotDot"></div>
+                    <div class="line-left"></div>
+                    <div class="HotspotAnnotation anno-left">
+                        <div class="ingredient-title" id="hs2-title">🌿 Ingredient</div>
+                        <ul class="ingredient-bullets" id="hs2-bullets"></ul>
+                    </div>
+                </button>
+
+                <button class="Hotspot" slot="hotspot-4" data-position="0.06 0.03 0.05" data-normal="0.5 1 0.5" data-visible="false">
+                    <div class="HotspotDot"></div>
+                    <div class="line-left"></div>
+                    <div class="HotspotAnnotation anno-left" style="top: 10px;">
+                        <div class="ingredient-title" id="hs4-title">🌿 Ingredient</div>
+                        <ul class="ingredient-bullets" id="hs4-bullets"></ul>
+                    </div>
+                </button>
+
+                <!-- Loading Bar -->
+                <div class="progress-bar" id="pbar">
+                    <div class="update-bar"></div>
+                </div>
+            </model-viewer>
+        </div>
+
+        <button class="carousel-arrow carousel-arrow-right" onclick="nextFood()"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- Capture shutter button overlay for AR camera view (Screenshot 4) -->
+    <div id="capture-btn-container">
+        <div class="capture-shutter" onclick="capturePhoto()"></div>
+    </div>
+
+    <script>
+        // ── Database Setup ──────────────────────────────────────────────────
+        const FOOD_DB = {
+            'Grilled Chicken Salad': {
+                emoji: '🥗',
+                price: 450,
+                cals: '400 Calories',
+                img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+                modelUrl: 'assets/grilled_chicken_salad.glb',
+                usdzUrl: 'assets/grilled_chicken_salad.usdz',
+                pills: ['Chicken', 'Spinach', 'Tomato', 'Cucumber'],
+                hs1: { title: '🍗 Grilled Chicken', bullets: ['Rich in protein (35g)', 'Seasoned with fresh herbs', 'Low in saturated fat'], pos: '0 0.05 0.03', norm: '0 1 0.2', icon: 'fa-drumstick-bite', color: '#E23744' },
+                hs2: { title: '🥬 Organic Spinach', bullets: ['Loaded with iron & calcium', 'Organic baby spinach leaves', 'Rich in Vitamin A & C'], pos: '0 0.02 -0.06', norm: '0 1 -0.8', icon: 'fa-leaf', color: '#00ff88' },
+                hs3: { title: '🍅 Juicy Tomato', bullets: ['Rich in Lycopene (antioxidant)', 'Freshly sliced vine tomatoes', 'Promotes heart health'], pos: '-0.06 0.04 -0.04', norm: '-0.5 1 -0.5', icon: 'fa-apple-whole', color: '#FF5A6E' },
+                hs4: { title: '🥒 Crisp Cucumber', bullets: ['95% water content for hydration', 'Adds a refreshing crunch', 'Excellent source of Vitamin K'], pos: '0.06 0.03 0.05', norm: '0.5 1 0.5', icon: 'fa-droplet', color: '#3b82f6' }
+            },
+            'Italian Supreme Pizza': {
+                emoji: '🍕',
+                price: 650,
+                cals: '850 Calories',
+                img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80',
+                modelUrl: 'assets/italian_supreme_pizza.glb',
+                usdzUrl: 'assets/italian_supreme_pizza.usdz',
+                pills: ['Mozzarella', 'Pepperoni', 'Olives', 'Bell Peppers'],
+                hs1: { title: '🧀 Fresh Mozzarella', bullets: ['Melted to golden perfection', 'Rich in calcium & protein', 'Authentic Italian cheese'], pos: '0 0.02 0', norm: '0 1 0', icon: 'fa-cheese', color: '#F4CE14' },
+                hs2: { title: '🥩 Spicy Pepperoni', bullets: ['Dry-cured premium beef & pork', 'Perfect smoky flavor', 'Crispy curled edges'], pos: '-0.06 0.02 0.03', norm: '-0.5 1 0.2', icon: 'fa-drumstick-bite', color: '#E23744' },
+                hs3: { title: '🫒 Black Olives', bullets: ['Sliced ripe Kalamata olives', 'Rich in healthy monounsaturated fats', 'Adds a savory, salty kick'], pos: '0.05 0.02 -0.06', norm: '0.4 1 -0.4', icon: 'fa-circle', color: '#333' },
+                hs4: { title: '🫑 Bell Peppers', bullets: ['Fresh red & green bell peppers', 'Packed with Vitamin C', 'Adds a sweet, crisp crunch'], pos: '-0.02 0.02 -0.05', norm: '-0.2 1 -0.5', icon: 'fa-leaf', color: '#00ff88' }
+            },
+            'Gourmet Chicken Caesar Salad': {
+                emoji: '🥗',
+                price: 480,
+                cals: '420 Calories',
+                img: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=800&q=80',
+                modelUrl: 'assets/grilled_chicken_salad.glb',
+                usdzUrl: 'assets/grilled_chicken_salad.usdz',
+                pills: ['Chicken', 'Romaine Lettuce', 'Parmesan', 'Croutons'],
+                hs1: { title: '🍗 Grilled Chicken Breast', bullets: ['Rich in protein (38g)', 'Herb-marinated & tender', 'Low in calories'], pos: '0 0.05 0.03', norm: '0 1 0.2', icon: 'fa-drumstick-bite', color: '#E23744' },
+                hs2: { title: '🥬 Romaine Lettuce', bullets: ['Freshly chopped daily', 'Provides crisp texture', 'High in fiber & Vitamin A'], pos: '0 0.02 -0.06', norm: '0 1 -0.8', icon: 'fa-leaf', color: '#00ff88' },
+                hs3: { title: '🧀 Shaved Parmesan', bullets: ['Aged Italian cheese', 'Adds rich savory flavor', 'Rich in calcium'], pos: '-0.06 0.04 -0.04', norm: '-0.5 1 -0.5', icon: 'fa-cheese', color: '#F4CE14' },
+                hs4: { title: '🥖 Garlic Croutons', bullets: ['Baked golden brown', 'Seasoned with garlic & herbs', 'Adds satisfying crunch'], pos: '0.06 0.03 0.05', norm: '0.5 1 0.5', icon: 'fa-bread-slice', color: '#8B4513' }
+            }
+        };
+
+        const FOOD_KEYS = Object.keys(FOOD_DB);
+        const params = new URLSearchParams(window.location.search);
+        const foodParam = params.get('food') || 'Grilled Chicken Salad';
+
+        // Find initial index
+        let currentFoodIndex = FOOD_KEYS.findIndex(k => k.toLowerCase().includes(foodParam.toLowerCase()));
+        if (currentFoodIndex === -1) currentFoodIndex = 0;
+
+        const viewer = document.getElementById('foodViewer');
+
+        // ── Dynamic UI Swapping ─────────────────────────────────────────────
+        function prevFood() {
+            currentFoodIndex = (currentFoodIndex - 1 + FOOD_KEYS.length) % FOOD_KEYS.length;
+            updateFoodUI();
+        }
+
+        function nextFood() {
+            currentFoodIndex = (currentFoodIndex + 1) % FOOD_KEYS.length;
+            updateFoodUI();
+        }
+
+        function toggleHotspot(index) {
+            const h = document.querySelector(`[slot="hotspot-${index}"]`);
+            if (!h || h.style.display === 'none') return;
+            
+            const isOpened = h.getAttribute('data-visible') === 'true';
+            
+            // Close all others first
+            document.querySelectorAll('.Hotspot').forEach(item => {
+                item.setAttribute('data-visible', 'false');
+            });
+            
+            if (!isOpened) {
+                h.setAttribute('data-visible', 'true');
+            }
+        }
+
+        function updateFoodUI() {
+            const foodName = FOOD_KEYS[currentFoodIndex];
+            const food = FOOD_DB[foodName];
+            if (!food) return;
+
+            // Sync URL parameter silently
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?food=' + encodeURIComponent(foodName);
+            window.history.replaceState({ path: newUrl }, '', newUrl);
+
+            // Update header title
+            document.querySelector('.brand-title').textContent = foodName.toUpperCase();
+
+            // Swap Model src and ios-src
+            viewer.src = food.modelUrl;
+            viewer.iosSrc = food.usdzUrl || '';
+
+            // Populate Hotspots dynamically
+            const hotspots = ['hs1', 'hs2', 'hs3', 'hs4'];
+            hotspots.forEach((hsKey, i) => {
+                const index = i + 1;
+                const hEl = document.querySelector(`[slot="hotspot-${index}"]`);
+                const hsData = food[hsKey];
+
+                if (hsData) {
+                    hEl.style.display = 'block';
+                    hEl.setAttribute('data-position', hsData.pos);
+                    hEl.setAttribute('data-normal', hsData.norm);
+                    hEl.querySelector('.HotspotDot').innerHTML = `<i class="fas ${hsData.icon}" style="color:${hsData.color};"></i>`;
+                    document.getElementById(`hs${index}-title`).textContent = hsData.title;
+                    document.getElementById(`hs${index}-bullets`).innerHTML = hsData.bullets.map(b => `<li>${b}</li>`).join('');
+                } else {
+                    hEl.style.display = 'none';
+                    hEl.setAttribute('data-visible', 'false');
+                }
+            });
+
+            // Set fallback image
+            document.getElementById('bg-fallback').src = food.img;
+
+            // Auto-pop out the details/hotspots!
+            setTimeout(showAllHotspots, 400);
+        }
+
+        // Close annotations on click outside
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.Hotspot')) {
+                document.querySelectorAll('.Hotspot').forEach(item => {
+                    item.setAttribute('data-visible', 'false');
+                });
+            }
+        });
+
+        function showAllHotspots() {
+            const foodName = FOOD_KEYS[currentFoodIndex];
+            const food = FOOD_DB[foodName];
+            
+            document.querySelectorAll('.Hotspot').forEach((h, i) => {
+                const index = i + 1;
+                const hsKey = `hs${index}`;
+                if (food[hsKey]) {
+                    h.setAttribute('data-visible', 'true');
+                }
+            });
+        }
+
+        function triggerNativeAR() {
+            viewer.activateAR();
+        }
+
+        // Camera capture interaction
+        function capturePhoto() {
+            const flash = document.createElement('div');
+            flash.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:white;z-index:99999;opacity:0;transition:opacity 0.1s ease-out;pointer-events:none;';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => { flash.style.opacity = '1'; }, 10);
+            setTimeout(() => { 
+                flash.style.opacity = '0'; 
+            }, 120);
+            setTimeout(() => { 
+                flash.remove(); 
+                showToastMessage("Captured! Photo saved to your gallery.");
+            }, 250);
+        }
+
+        // ── Camera Feed Controls ────────────────────────────────────────────
+        async function startBackgroundCamera() {
+            const video = document.getElementById('bg-camera');
+            const fallback = document.getElementById('bg-fallback');
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                fallback.style.display = 'block';
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                fallback.style.display = 'none';
+            } catch (err) {
+                fallback.style.display = 'block';
+                console.log('Camera access denied or unavailable', err);
+            }
+        }
+        
+        function showToastMessage(text) {
+            let toast = document.getElementById('mobile-ar-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'mobile-ar-toast';
+                toast.style.cssText = 'position:fixed;top:30px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(15,22,15,0.96);color:white;padding:12px 24px;border-radius:30px;font-size:0.9rem;font-weight:700;z-index:99999;border:1.5px solid #F4CE14;backdrop-filter:blur(10px);opacity:0;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow:0 10px 30px rgba(0,0,0,0.5);display:flex;align-items:center;gap:8px;';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color:#00ff88;"></i> ${text}`;
+            setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateX(-50%) translateY(0)'; }, 10);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(-20px)'; }, 2500);
+        }
+
+        // ── Initialize ──────────────────────────────────────────────────────
+        window.addEventListener('load', () => {
+            updateFoodUI();
+            
+            // Add click event listeners directly to Hotspot elements
+            document.querySelectorAll('.Hotspot').forEach((h, idx) => {
+                h.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleHotspot(idx + 1);
+                });
+            });
+
+            // Start camera feed automatically
+            startBackgroundCamera();
+
+            // Progress loader
+            viewer.addEventListener('progress', (e) => {
+                const progressBar = document.querySelector('.update-bar');
+                const progressContainer = document.getElementById('pbar');
+                progressBar.style.width = `${e.detail.totalProgress * 100}%`;
+                if (e.detail.totalProgress === 1) {
+                    progressContainer.classList.add('hide');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
